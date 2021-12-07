@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('修改物流价格')" />
+</head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-expressPrice-edit" th:object="${funExpressPrice}">
+            <input name="outsetPlace" th:field="*{outsetPlace}" type="hidden">
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">出发事业部：</label>
+                <div class="col-sm-8">
+                    <input name="outsetPlace" th:field="*{outsetPlace}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">出发省份：</label>
+                <div class="col-sm-8">
+                    <input name="outsetProv" th:field="*{outsetProv}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">出发城市：</label>
+                <div class="col-sm-8">
+                    <input name="outsetCity" th:field="*{outsetCity}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">出发简称：</label>
+                <div class="col-sm-8">
+                    <input name="outsetName" th:field="*{outsetName}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">到达省份：</label>
+                <div class="col-sm-8">
+                    <input name="arriveProv" th:field="*{arriveProv}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">到达城市：</label>
+                <div class="col-sm-8">
+                    <input name="arriveCity" th:field="*{arriveCity}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">到达简称：</label>
+                <div class="col-sm-8">
+                    <input name="arriveName" th:field="*{arriveName}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">城市城市：</label>
+                <div class="col-sm-8">
+                    <input name="city2city" th:field="*{city2city}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">标快首重：</label>
+                <div class="col-sm-8">
+                    <input name="standardFirst" th:field="*{standardFirst}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">标快续重：</label>
+                <div class="col-sm-8">
+                    <input name="standardContinue" th:field="*{standardContinue}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">大件快递3.60首重：</label>
+                <div class="col-sm-8">
+                    <input name="bigFirst" th:field="*{bigFirst}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">大件快递3.60续重：</label>
+                <div class="col-sm-8">
+                    <input name="bigContinue" th:field="*{bigContinue}" class="form-control" type="text">
+                </div>
+            </div>
+        </form>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        var prefix = ctx + "recycle/expressPrice";
+        $("#form-expressPrice-edit").validate({
+            focusCleanup: true
+        });
+
+        function submitHandler() {
+            if ($.validate.form()) {
+                $.operate.save(prefix + "/edit", $('#form-expressPrice-edit').serialize());
+            }
+        }
+    </script>
+</body>
+</html>

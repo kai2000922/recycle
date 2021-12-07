@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.recycle.mapper.FunGoodsMapper">
+    
+    <resultMap type="FunGoods" id="FunGoodsResult">
+        <result property="goodID"    column="goodID"    />
+        <result property="goodsName"    column="goods_name"    />
+        <result property="goodsDescribe"    column="goods_describe"    />
+        <result property="goodsType"    column="goods_type"    />
+        <result property="hxPrice"    column="hx_price"    />
+        <result property="yhPrice"    column="yh_price"    />
+        <result property="zfPrice"    column="zf_price"    />
+        <result property="expressPrice"    column="express_price"    />
+        <result property="images"    column="images"    />
+        <result property="descImages"    column="desc_images"    />
+        <result property="orderImages"    column="order_images"    />
+        <result property="channel"    column="channel"    />
+        <result property="goodsNum"    column="goods_num"    />
+        <result property="exportName"    column="export_name"    />
+        <result property="goodsStatus"    column="goods_status"    />
+    </resultMap>
+
+    <sql id="selectFunGoodsVo">
+        select goodID, goods_name, goods_describe, goods_type, hx_price, yh_price, zf_price, express_price, images, desc_images, order_images, channel, goods_num, export_name, goods_status from fun_goods
+    </sql>
+
+    <select id="selectFunGoodsList" parameterType="FunGoods" resultMap="FunGoodsResult">
+        <include refid="selectFunGoodsVo"/>
+        <where>  
+            <if test="goodsName != null  and goodsName != ''"> and goods_name like concat('%', #{goodsName}, '%')</if>
+            <if test="goodsDescribe != null  and goodsDescribe != ''"> and goods_describe = #{goodsDescribe}</if>
+            <if test="goodsType != null  and goodsType != ''"> and goods_type = #{goodsType}</if>
+            <if test="goodsNum != null  and goodsNum != ''"> and goods_num = #{goodsNum}</if>
+            <if test="channel != null  and channel != ''"> and channel = #{channel}</if>
+            <if test="goodsStatus != null  and goodsStatus != ''"> and goods_status = #{goodsStatus}</if>
+        </where>
+    </select>
+    
+    <select id="selectFunGoodsByGoodID" parameterType="Integer" resultMap="FunGoodsResult">
+        <include refid="selectFunGoodsVo"/>
+        where goodID = #{goodID}
+    </select>
+        
+    <insert id="insertFunGoods" parameterType="FunGoods" useGeneratedKeys="true" keyProperty="goodID">
+        insert into fun_goods
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="goodsName != null and goodsName != ''">goods_name,</if>
+            <if test="goodsDescribe != null and goodsDescribe != ''">goods_describe,</if>
+            <if test="goodsType != null and goodsType != ''">goods_type,</if>
+            <if test="hxPrice != null">hx_price,</if>
+            <if test="yhPrice != null">yh_price,</if>
+            <if test="zfPrice != null">zf_price,</if>
+            <if test="expressPrice != null">express_price,</if>
+            <if test="images != null">images,</if>
+            <if test="descImages != null">desc_images,</if>
+            <if test="orderImages != null">order_images,</if>
+            <if test="channel != null">channel,</if>
+            <if test="goodsNum != null">goods_num,</if>
+            <if test="exportName != null">export_name,</if>
+            <if test="goodsStatus != null">goods_status,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="goodsName != null and goodsName != ''">#{goodsName},</if>
+            <if test="goodsDescribe != null and goodsDescribe != ''">#{goodsDescribe},</if>
+            <if test="goodsType != null and goodsType != ''">#{goodsType},</if>
+            <if test="hxPrice != null">#{hxPrice},</if>
+            <if test="yhPrice != null">#{yhPrice},</if>
+            <if test="zfPrice != null">#{zfPrice},</if>
+            <if test="expressPrice != null">#{expressPrice},</if>
+            <if test="images != null">#{images},</if>
+            <if test="descImages != null">#{descImages},</if>
+            <if test="orderImages != null">#{orderImages},</if>
+            <if test="channel != null">#{channel},</if>
+            <if test="goodsNum != null">#{goodsNum},</if>
+            <if test="exportName != null">#{exportName},</if>
+            <if test="goodsStatus != null">#{goodsStatus},</if>
+         </trim>
+    </insert>
+
+    <update id="updateFunGoods" parameterType="FunGoods">
+        update fun_goods
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="goodsName != null and goodsName != ''">goods_name = #{goodsName},</if>
+            <if test="goodsDescribe != null and goodsDescribe != ''">goods_describe = #{goodsDescribe},</if>
+            <if test="goodsType != null and goodsType != ''">goods_type = #{goodsType},</if>
+            <if test="hxPrice != null">hx_price = #{hxPrice},</if>
+            <if test="yhPrice != null">yh_price = #{yhPrice},</if>
+            <if test="zfPrice != null">zf_price = #{zfPrice},</if>
+            <if test="expressPrice != null">express_price = #{expressPrice},</if>
+            <if test="images != null">images = #{images},</if>
+            <if test="descImages != null">desc_images = #{descImages},</if>
+            <if test="orderImages != null">order_images = #{orderImages},</if>
+            <if test="channel != null">channel = #{channel},</if>
+            <if test="goodsNum != null">goods_num = #{goodsNum},</if>
+            <if test="exportName != null">export_name = #{exportName},</if>
+            <if test="goodsStatus != null">goods_status = #{goodsStatus},</if>
+        </trim>
+        where goodID = #{goodID}
+    </update>
+
+    <delete id="deleteFunGoodsByGoodID" parameterType="Integer">
+        delete from fun_goods where goodID = #{goodID}
+    </delete>
+
+    <delete id="deleteFunGoodsByGoodIDs" parameterType="String">
+        delete from fun_goods where goodID in 
+        <foreach item="goodID" collection="array" open="(" separator="," close=")">
+            #{goodID}
+        </foreach>
+    </delete>
+
+</mapper>

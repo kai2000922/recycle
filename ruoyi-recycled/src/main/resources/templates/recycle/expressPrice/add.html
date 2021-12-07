@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('新增物流价格')" />
+</head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-expressPrice-add">
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">出发事业部：</label>
+                <div class="col-sm-8">
+                    <input name="outsetPlace" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">出发省份：</label>
+                <div class="col-sm-8">
+                    <input name="outsetProv" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">出发城市：</label>
+                <div class="col-sm-8">
+                    <input name="outsetCity" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">出发简称：</label>
+                <div class="col-sm-8">
+                    <input name="outsetName" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">到达省份：</label>
+                <div class="col-sm-8">
+                    <input name="arriveProv" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">到达城市：</label>
+                <div class="col-sm-8">
+                    <input name="arriveCity" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">到达简称：</label>
+                <div class="col-sm-8">
+                    <input name="arriveName" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">城市城市：</label>
+                <div class="col-sm-8">
+                    <input name="city2city" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">标快首重：</label>
+                <div class="col-sm-8">
+                    <input name="standardFirst" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">标快续重：</label>
+                <div class="col-sm-8">
+                    <input name="standardContinue" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">大件快递3.60首重：</label>
+                <div class="col-sm-8">
+                    <input name="bigFirst" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">大件快递3.60续重：</label>
+                <div class="col-sm-8">
+                    <input name="bigContinue" class="form-control" type="text">
+                </div>
+            </div>
+        </form>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        var prefix = ctx + "recycle/expressPrice"
+        $("#form-expressPrice-add").validate({
+            focusCleanup: true
+        });
+
+        function submitHandler() {
+            if ($.validate.form()) {
+                $.operate.save(prefix + "/add", $('#form-expressPrice-add').serialize());
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.recycle.mapper.FunRecieveMapper">
+    
+    <resultMap type="FunRecieve" id="FunRecieveResult">
+        <result property="receiveID"    column="receiveID"    />
+        <result property="name"    column="name"    />
+        <result property="phone"    column="phone"    />
+        <result property="prov"    column="prov"    />
+        <result property="city"    column="city"    />
+        <result property="area"    column="area"    />
+        <result property="address"    column="address"    />
+        <result property="control"    column="control"    />
+        <result property="counter"    column="counter"    />
+    </resultMap>
+
+    <sql id="selectFunRecieveVo">
+        select receiveID, name, phone, prov, city, area, address, control, counter from fun_recieve
+    </sql>
+
+    <select id="selectFunRecieveList" parameterType="FunRecieve" resultMap="FunRecieveResult">
+        <include refid="selectFunRecieveVo"/>
+        <where>  
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="phone != null  and phone != ''"> and phone = #{phone}</if>
+            <if test="prov != null  and prov != ''"> and prov = #{prov}</if>
+            <if test="control != null  and control != ''"> and control like concat('%', #{control}, '%')</if>
+            <if test="counter != null "> and counter = #{counter}</if>
+            <if test="city != null "> and city = #{city}</if>
+        </where>
+    </select>
+    
+    <select id="selectFunRecieveByReceiveID" parameterType="Long" resultMap="FunRecieveResult">
+        <include refid="selectFunRecieveVo"/>
+        where receiveID = #{receiveID}
+    </select>
+
+    <select id="selectFunRecieveByProv" parameterType="String" resultMap="FunRecieveResult">
+        <include refid="selectFunRecieveVo"/>
+        where control like concat('%', #{prov}, '%') order by counter
+    </select>
+        
+    <insert id="insertFunRecieve" parameterType="FunRecieve" useGeneratedKeys="true" keyProperty="receiveID">
+        insert into fun_recieve
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null">name,</if>
+            <if test="phone != null">phone,</if>
+            <if test="prov != null">prov,</if>
+            <if test="city != null">city,</if>
+            <if test="area != null">area,</if>
+            <if test="address != null">address,</if>
+            <if test="control != null">control,</if>
+            <if test="counter != null">counter,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null">#{name},</if>
+            <if test="phone != null">#{phone},</if>
+            <if test="prov != null">#{prov},</if>
+            <if test="city != null">#{city},</if>
+            <if test="area != null">#{area},</if>
+            <if test="address != null">#{address},</if>
+            <if test="control != null">#{control},</if>
+            <if test="counter != null">#{counter},</if>
+         </trim>
+    </insert>
+
+    <update id="updateFunRecieve" parameterType="FunRecieve">
+        update fun_recieve
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null">name = #{name},</if>
+            <if test="phone != null">phone = #{phone},</if>
+            <if test="prov != null">prov = #{prov},</if>
+            <if test="city != null">city = #{city},</if>
+            <if test="area != null">area = #{area},</if>
+            <if test="address != null">address = #{address},</if>
+            <if test="control != null">control = #{control},</if>
+            <if test="counter != null">counter = #{counter},</if>
+        </trim>
+        where receiveID = #{receiveID}
+    </update>
+
+    <delete id="deleteFunRecieveByReceiveID" parameterType="Long">
+        delete from fun_recieve where receiveID = #{receiveID}
+    </delete>
+
+    <delete id="deleteFunRecieveByReceiveIDs" parameterType="String">
+        delete from fun_recieve where receiveID in 
+        <foreach item="receiveID" collection="array" open="(" separator="," close=")">
+            #{receiveID}
+        </foreach>
+    </delete>
+
+</mapper>

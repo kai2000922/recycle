@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.recycle.mapper.FunOrdersMapper">
+    
+    <resultMap type="FunOrders" id="FunOrdersResult">
+        <result property="ordersID"    column="ordersID"    />
+        <result property="ordersNum"    column="orders_num"    />
+        <result property="goodsId"    column="goods_id"    />
+        <result property="goodsName"    column="goods_name"    />
+        <result property="goodsType"    column="goods_type"    />
+        <result property="zfPrice"    column="zf_price"    />
+        <result property="userId"    column="user_id"    />
+        <result property="userName"    column="user_name"    />
+        <result property="userPhone"    column="user_phone"    />
+        <result property="userAddress"    column="user_address"    />
+        <result property="tradeNo"    column="trade_no"    />
+        <result property="expressNum"    column="express_num"    />
+        <result property="channel"    column="channel"    />
+        <result property="ordersStatus"    column="orders_status"    />
+        <result property="mark"    column="mark"    />
+        <result property="statu"    column="statu"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectFunOrdersVo">
+        select ordersID, orders_num, goods_id, goods_name, goods_type, zf_price, user_id, user_name, user_phone, user_address, trade_no, express_num, channel, orders_status, mark, create_time, update_time, statu from fun_orders
+    </sql>
+
+    <select id="selectFunOrdersList" parameterType="FunOrders" resultMap="FunOrdersResult">
+        <include refid="selectFunOrdersVo"/>
+        <where>  
+            <if test="ordersNum != null "> and orders_num like concat('%', #{ordersNum}, '%')</if>
+            <if test="goodsId != null "> and goods_id = #{goodsId}</if>
+            <if test="goodsName != null  and goodsName != ''"> and goods_name like concat('%', #{goodsName}, '%')</if>
+            <if test="userName != null  and userName != ''"> and user_name like concat('%', #{userName}, '%')</if>
+            <if test="userPhone != null  and userPhone != ''"> and user_phone = #{userPhone}</if>
+            <if test="tradeNo != null  and tradeNo != ''"> and trade_no like concat('%', #{tradeNo}, '%')</if>
+            <if test="ordersStatus != null  and ordersStatus != ''"> and orders_status = #{ordersStatus}</if>
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="statu != null  and statu != ''"> and statu = #{statu}</if>
+            <if test="params.beginCreateTime != null and params.beginCreateTime != '' and params.endCreateTime != null and params.endCreateTime != ''"> and create_time between #{params.beginCreateTime} and #{params.endCreateTime}</if>
+        </where>
+        order by ordersID desc
+    </select>
+    
+    <select id="selectFunOrdersByOrdersID" parameterType="Long" resultMap="FunOrdersResult">
+        <include refid="selectFunOrdersVo"/>
+        where ordersID = #{ordersID}
+    </select>
+        
+    <insert id="insertFunOrders" parameterType="FunOrders" useGeneratedKeys="true" keyProperty="ordersID">
+        insert into fun_orders
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="ordersNum != null">orders_num,</if>
+            <if test="goodsId != null">goods_id,</if>
+            <if test="goodsName != null">goods_name,</if>
+            <if test="goodsType != null">goods_type,</if>
+            <if test="zfPrice != null">zf_price,</if>
+            <if test="userId != null">user_id,</if>
+            <if test="userName != null">user_name,</if>
+            <if test="userPhone != null">user_phone,</if>
+            <if test="userAddress != null">user_address,</if>
+            <if test="tradeNo != null">trade_no,</if>
+            <if test="expressNum != null">express_num,</if>
+            <if test="channel != null">channel,</if>
+            <if test="ordersStatus != null">orders_status,</if>
+            <if test="mark != null">mark,</if>
+            <if test="statu != null">statu,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="ordersNum != null">#{ordersNum},</if>
+            <if test="goodsId != null">#{goodsId},</if>
+            <if test="goodsName != null">#{goodsName},</if>
+            <if test="goodsType != null">#{goodsType},</if>
+            <if test="zfPrice != null">#{zfPrice},</if>
+            <if test="userId != null">#{userId},</if>
+            <if test="userName != null">#{userName},</if>
+            <if test="userPhone != null">#{userPhone},</if>
+            <if test="userAddress != null">#{userAddress},</if>
+            <if test="tradeNo != null">#{tradeNo},</if>
+            <if test="expressNum != null">#{expressNum},</if>
+            <if test="channel != null">#{channel},</if>
+            <if test="ordersStatus != null">#{ordersStatus},</if>
+            <if test="mark != null">#{mark},</if>
+            <if test="statu != null">#{statu},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateFunOrders" parameterType="FunOrders">
+        update fun_orders
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="ordersNum != null">orders_num = #{ordersNum},</if>
+            <if test="goodsId != null">goods_id = #{goodsId},</if>
+            <if test="goodsName != null">goods_name = #{goodsName},</if>
+            <if test="goodsType != null">goods_type = #{goodsType},</if>
+            <if test="zfPrice != null">zf_price = #{zfPrice},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="userName != null">user_name = #{userName},</if>
+            <if test="userPhone != null">user_phone = #{userPhone},</if>
+            <if test="userAddress != null">user_address = #{userAddress},</if>
+            <if test="tradeNo != null">trade_no = #{tradeNo},</if>
+            <if test="expressNum != null">express_num = #{expressNum},</if>
+            <if test="channel != null">channel = #{channel},</if>
+            <if test="ordersStatus != null">orders_status = #{ordersStatus},</if>
+            <if test="mark != null">mark = #{mark},</if>
+            <if test="statu != null">statu = #{statu},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where ordersID = #{ordersID}
+    </update>
+
+    <delete id="deleteFunOrdersByOrdersID" parameterType="Long">
+        delete from fun_orders where ordersID = #{ordersID}
+    </delete>
+
+    <delete id="deleteFunOrdersByOrdersIDs" parameterType="String">
+        delete from fun_orders where ordersID in 
+        <foreach item="ordersID" collection="array" open="(" separator="," close=")">
+            #{ordersID}
+        </foreach>
+    </delete>
+
+</mapper>

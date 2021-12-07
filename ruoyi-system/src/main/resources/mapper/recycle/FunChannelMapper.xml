@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.recycle.mapper.FunChannelMapper">
+    
+    <resultMap type="FunChannel" id="FunChannelResult">
+        <result property="channelId"    column="channel_id"    />
+        <result property="channelName"    column="channel_name"    />
+        <result property="counter"    column="counter"    />
+        <result property="links"    column="links"    />
+        <result property="pages"    column="pages"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="goodsID"    column="goodsID"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectFunChannelVo">
+        select channel_id, channel_name, counter, links, pages, create_time, remark, goodsID, update_time from fun_channel
+    </sql>
+
+    <select id="selectFunChannelList" parameterType="FunChannel" resultMap="FunChannelResult">
+        <include refid="selectFunChannelVo"/>
+        <where>  
+            <if test="channelName != null  and channelName != ''"> and channel_name like concat('%', #{channelName}, '%')</if>
+            <if test="counter != null "> and counter = #{counter}</if>
+            <if test="pages != null  and pages != ''"> and pages = #{pages}</if>
+            <if test="params.beginCreateTime != null and params.beginCreateTime != '' and params.endCreateTime != null and params.endCreateTime != ''"> and create_time between #{params.beginCreateTime} and #{params.endCreateTime}</if>
+            <if test="goodsID != null  and goodsID != ''"> and goodsID = #{goodsID}</if>
+        </where>
+    </select>
+    
+    <select id="selectFunChannelByChannelId" parameterType="Long" resultMap="FunChannelResult">
+        <include refid="selectFunChannelVo"/>
+        where channel_id = #{channelId}
+    </select>
+        
+    <insert id="insertFunChannel" parameterType="FunChannel" useGeneratedKeys="true" keyProperty="channelId">
+        insert into fun_channel
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="channelName != null">channel_name,</if>
+            <if test="counter != null">counter,</if>
+            <if test="links != null">links,</if>
+            <if test="pages != null">pages,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="remark != null">remark,</if>
+            <if test="goodsID != null">goodsID,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="channelName != null">#{channelName},</if>
+            <if test="counter != null">#{counter},</if>
+            <if test="links != null">#{links},</if>
+            <if test="pages != null">#{pages},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="goodsID != null">#{goodsID},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateFunChannel" parameterType="FunChannel">
+        update fun_channel
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="channelName != null">channel_name = #{channelName},</if>
+            <if test="counter != null">counter = #{counter},</if>
+            <if test="links != null">links = #{links},</if>
+            <if test="pages != null">pages = #{pages},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="goodsID != null">goodsID = #{goodsID},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where channel_id = #{channelId}
+    </update>
+
+    <delete id="deleteFunChannelByChannelId" parameterType="Long">
+        delete from fun_channel where channel_id = #{channelId}
+    </delete>
+
+    <delete id="deleteFunChannelByChannelIds" parameterType="String">
+        delete from fun_channel where channel_id in 
+        <foreach item="channelId" collection="array" open="(" separator="," close=")">
+            #{channelId}
+        </foreach>
+    </delete>
+
+</mapper>

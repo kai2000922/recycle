@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.recycle.mapper.FunUserMapper">
+    
+    <resultMap type="FunUser" id="FunUserResult">
+        <result property="userID"    column="userID"    />
+        <result property="userNo"    column="userNo"    />
+        <result property="userName"    column="user_name"    />
+        <result property="userPhone"    column="user_phone"    />
+        <result property="recentAdd"    column="recent_add"    />
+        <result property="coupon"    column="coupon"    />
+        <result property="recycled"    column="recycled"    />
+        <result property="channel"    column="channel"    />
+        <result property="remark"    column="remark"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectFunUserVo">
+        select userID, userNo, user_name, user_phone, recent_add, coupon, recycled, channel, remark, create_time, update_time from fun_user
+    </sql>
+
+    <select id="selectFunUserList" parameterType="FunUser" resultMap="FunUserResult">
+        <include refid="selectFunUserVo"/>
+        <where>  
+            <if test="userNo != null  and userNo != ''"> and userNo = #{userNo}</if>
+            <if test="userName != null  and userName != ''"> and user_name like concat('%', #{userName}, '%')</if>
+            <if test="userPhone != null  and userPhone != ''"> and user_phone = #{userPhone}</if>
+        </where>
+    </select>
+    
+    <select id="selectFunUserByUserID" parameterType="Long" resultMap="FunUserResult">
+        <include refid="selectFunUserVo"/>
+        where userID = #{userID}
+    </select>
+
+    <select id="selectFunUserByUserNo" parameterType="String" resultMap="FunUserResult">
+        <include refid="selectFunUserVo"/>
+        where userNo = #{userNo}
+    </select>
+        
+    <insert id="insertFunUser" parameterType="FunUser">
+        insert into fun_user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userID != null">userID,</if>
+            <if test="userNo != null">userNo,</if>
+            <if test="userName != null">user_name,</if>
+            <if test="userPhone != null">user_phone,</if>
+            <if test="recentAdd != null">recent_add,</if>
+            <if test="coupon != null">coupon,</if>
+            <if test="recycled != null">recycled,</if>
+            <if test="channel != null">channel,</if>
+            <if test="remark != null">remark,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userID != null">#{userID},</if>
+            <if test="userNo != null">#{userNo},</if>
+            <if test="userName != null">#{userName},</if>
+            <if test="userPhone != null">#{userPhone},</if>
+            <if test="recentAdd != null">#{recentAdd},</if>
+            <if test="coupon != null">#{coupon},</if>
+            <if test="recycled != null">#{recycled},</if>
+            <if test="channel != null">#{channel},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateFunUser" parameterType="FunUser">
+        update fun_user
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userNo != null">userNo = #{userNo},</if>
+            <if test="userName != null">user_name = #{userName},</if>
+            <if test="userPhone != null">user_phone = #{userPhone},</if>
+            <if test="recentAdd != null">recent_add = #{recentAdd},</if>
+            <if test="coupon != null">coupon = #{coupon},</if>
+            <if test="recycled != null">recycled = #{recycled},</if>
+            <if test="channel != null">channel = #{channel},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where userID = #{userID}
+    </update>
+
+    <delete id="deleteFunUserByUserID" parameterType="Long">
+        delete from fun_user where userID = #{userID}
+    </delete>
+
+    <delete id="deleteFunUserByUserIDs" parameterType="String">
+        delete from fun_user where userID in 
+        <foreach item="userID" collection="array" open="(" separator="," close=")">
+            #{userID}
+        </foreach>
+    </delete>
+
+</mapper>

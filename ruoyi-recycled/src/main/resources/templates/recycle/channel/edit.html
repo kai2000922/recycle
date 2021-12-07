@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('修改渠道信息')" />
+</head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-channel-edit" th:object="${funChannel}">
+            <input name="channelId" th:field="*{channelId}" type="hidden">
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">渠道名称：</label>
+                <div class="col-sm-8">
+                    <input name="channelName" th:field="*{channelName}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">计数：</label>
+                <div class="col-sm-8">
+                    <input name="counter" th:field="*{counter}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">页面：</label>
+                <div class="col-sm-8">
+                    <div class="radio-box" th:each="dict : ${@dict.getType('fun_pages')}">
+                        <input type="radio" th:id="${'pages_' + dict.dictCode}" name="pages" th:value="${dict.dictValue}" th:field="*{pages}">
+                        <label th:for="${'pages_' + dict.dictCode}" th:text="${dict.dictLabel}"></label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">备注：</label>
+                <div class="col-sm-8">
+                    <input name="remark" th:field="*{remark}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">商品ID：</label>
+                <div class="col-sm-8">
+                    <input name="goodsID" th:field="*{goodsID}" class="form-control" type="text">
+                </div>
+            </div>
+        </form>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        var prefix = ctx + "recycle/channel";
+        $("#form-channel-edit").validate({
+            focusCleanup: true
+        });
+
+        function submitHandler() {
+            if ($.validate.form()) {
+                $.operate.save(prefix + "/edit", $('#form-channel-edit').serialize());
+            }
+        }
+    </script>
+</body>
+</html>

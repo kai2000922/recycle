@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('物流价格列表')" />
+</head>
+<body class="gray-bg">
+     <div class="container-div">
+        <div class="row">
+            <div class="col-sm-12 search-collapse">
+                <form id="formId">
+                    <div class="select-list">
+                        <ul>
+                            <li>
+                                <label>出发省份：</label>
+                                <input type="text" name="outsetProv"/>
+                            </li>
+                            <li>
+                                <label>出发城市：</label>
+                                <input type="text" name="outsetCity"/>
+                            </li>
+                            <li>
+                                <label>出发简称：</label>
+                                <input type="text" name="outsetName"/>
+                            </li>
+                            <li>
+                                <label>到达省份：</label>
+                                <input type="text" name="arriveProv"/>
+                            </li>
+                            <li>
+                                <label>到达城市：</label>
+                                <input type="text" name="arriveCity"/>
+                            </li>
+                            <li>
+                                <label>到达简称：</label>
+                                <input type="text" name="arriveName"/>
+                            </li>
+                            <li>
+                                <label>城市城市：</label>
+                                <input type="text" name="city2city"/>
+                            </li>
+                            <li>
+                                <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                                <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+                            </li>
+                        </ul>
+                    </div>
+                </form>
+            </div>
+
+            <div class="btn-group-sm" id="toolbar" role="group">
+                <a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="recycle:expressPrice:add">
+                    <i class="fa fa-plus"></i> 添加
+                </a>
+                <a class="btn btn-primary single disabled" onclick="$.operate.edit()" shiro:hasPermission="recycle:expressPrice:edit">
+                    <i class="fa fa-edit"></i> 修改
+                </a>
+                <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="recycle:expressPrice:remove">
+                    <i class="fa fa-remove"></i> 删除
+                </a>
+                <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="recycle:expressPrice:export">
+                    <i class="fa fa-download"></i> 导出
+                </a>
+            </div>
+            <div class="col-sm-12 select-table table-striped">
+                <table id="bootstrap-table"></table>
+            </div>
+        </div>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('recycle:expressPrice:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('recycle:expressPrice:remove')}]];
+        var prefix = ctx + "recycle/expressPrice";
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                exportUrl: prefix + "/export",
+                modalName: "物流价格",
+                columns: [{
+                    checkbox: true
+                },
+                {
+                    field: 'outsetPlace',
+                    title: '出发事业部'
+                },
+                {
+                    field: 'outsetProv',
+                    title: '出发省份'
+                },
+                {
+                    field: 'outsetCity',
+                    title: '出发城市'
+                },
+                {
+                    field: 'outsetName',
+                    title: '出发简称'
+                },
+                {
+                    field: 'arriveProv',
+                    title: '到达省份'
+                },
+                {
+                    field: 'arriveCity',
+                    title: '到达城市'
+                },
+                {
+                    field: 'arriveName',
+                    title: '到达简称'
+                },
+                {
+                    field: 'city2city',
+                    title: '城市城市'
+                },
+                {
+                    field: 'standardFirst',
+                    title: '标快首重'
+                },
+                {
+                    field: 'standardContinue',
+                    title: '标快续重'
+                },
+                {
+                    field: 'bigFirst',
+                    title: '大件快递3.60首重'
+                },
+                {
+                    field: 'bigContinue',
+                    title: '大件快递3.60续重'
+                },
+                {
+                    title: '操作',
+                    align: 'center',
+                    formatter: function(value, row, index) {
+                        var actions = [];
+                        actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="$.operate.edit(\'' + row.outsetPlace + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.outsetPlace + '\')"><i class="fa fa-remove"></i>删除</a>');
+                        return actions.join('');
+                    }
+                }]
+            };
+            $.table.init(options);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.recycle.mapper.FunRecycleMapper">
+    
+    <resultMap type="FunRecycle" id="FunRecycleResult">
+        <result property="recycleID"    column="recycleID"    />
+        <result property="user"    column="user"    />
+        <result property="name"    column="name"    />
+        <result property="prov"    column="prov"    />
+        <result property="city"    column="city"    />
+        <result property="area"    column="area"    />
+        <result property="address"    column="address"    />
+        <result property="phone"    column="phone"    />
+        <result property="expectWeight"    column="expect_weight"    />
+        <result property="actualWeight"    column="actual_weight"    />
+        <result property="isNow"    column="is_now"    />
+        <result property="expectTime"    column="expect_time"    />
+        <result property="receiveAddId"    column="receive_add_id"    />
+        <result property="expressNum"    column="express_num"    />
+        <result property="expressPrice"    column="express_price"    />
+        <result property="expressVlo"    column="express_vlo"    />
+        <result property="expressStatus"    column="express_status"    />
+        <result property="expressUpdateTime"    column="express_update_time"    />
+        <result property="courier"    column="courier"    />
+        <result property="channelNum"    column="channel_num"    />
+        <result property="channelSource"    column="channel_source"    />
+        <result property="orderStatus"    column="order_status"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="cacelReason"    column="cacel_reason"    />
+        <result property="billingTime"    column="billing_time"    />
+        <result property="orderNum"    column="order_num"    />
+        <result property="authCode"    column="auth_code"    />
+    </resultMap>
+
+    <sql id="selectFunRecycleVo">
+        select recycleID, user, name, prov, city, area, address, phone, expect_weight, actual_weight, is_now, expect_time, receive_add_id, express_num, express_price, express_vlo, express_status, express_update_time, courier, channel_num, channel_source, order_status, create_time, update_time, cacel_reason, billing_time, order_num, auth_code from fun_recycle
+    </sql>
+
+    <select id="selectFunRecycleList" parameterType="FunRecycle" resultMap="FunRecycleResult">
+        <include refid="selectFunRecycleVo"/>
+        <where>  
+            <if test="user != null  and user != ''"> and user = #{user}</if>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="address != null  and address != ''"> and address = #{address}</if>
+            <if test="phone != null  and phone != ''"> and phone = #{phone}</if>
+            <if test="expressNum != null  and expressNum != ''"> and express_num like concat('%', #{expressNum}, '%')</if>
+            <if test="channelNum != null  and channelNum != ''"> and channel_num = #{channelNum}</if>
+            <if test="channelSource != null  and channelSource != ''"> and channel_source = #{channelSource}</if>
+            <if test="cacelReason != null  and cacelReason != ''"> and cacel_reason = #{cacelReason}</if>
+            <if test="orderStatus != null  and orderStatus != ''"> and order_status = #{orderStatus}</if>
+            <if test="statu != null  and statu != ''"> and statu = #{statu}</if>
+            <if test="authCode != null  and authCode != ''"> and auth_code = #{authCode}</if>
+            <if test="params.beginCreateTime != null and params.beginCreateTime != '' and params.endCreateTime != null and params.endCreateTime != ''"> and create_time between #{params.beginCreateTime} and #{params.endCreateTime}</if>
+        </where>
+        order by recycleID desc
+    </select>
+
+    <select id="selectQueryFunRecycleList" parameterType="FunRecycle" resultMap="FunRecycleResult">
+        <include refid="selectFunRecycleVo"/>
+        <where>
+            <if test="user != null  and user != ''"> and user = #{user}</if>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="address != null  and address != ''"> and address = #{address}</if>
+            <if test="phone != null  and phone != ''"> and phone = #{phone}</if>
+            <if test="expressNum != null  and expressNum != ''"> and express_num like concat('%', #{expressNum}, '%')</if>
+            <if test="channelNum != null  and channelNum != ''"> and channel_num = #{channelNum}</if>
+            <if test="channelSource != null  and channelSource != ''"> and channel_source = #{channelSource}</if>
+            <if test="cacelReason != null  and cacelReason != ''"> and cacel_reason = #{cacelReason}</if>
+            and statu = '0' and order_status = '待上门'
+        </where>
+        order by recycleID desc
+    </select>
+    
+    <select id="selectFunRecycleByRecycleID" parameterType="Long" resultMap="FunRecycleResult">
+        <include refid="selectFunRecycleVo"/>
+        where recycleID = #{recycleID}
+    </select>
+
+    <select id="selectFunRecycleByRecycleOrder" parameterType="Long" resultMap="FunRecycleResult">
+        <include refid="selectFunRecycleVo"/>
+        where order_num = #{orderNum}
+    </select>
+        
+    <insert id="insertFunRecycle" parameterType="FunRecycle" useGeneratedKeys="true" keyProperty="recycleID">
+        insert into fun_recycle
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="user != null and user != ''">user,</if>
+            <if test="name != null and name != ''">name,</if>
+            <if test="prov != null and prov != ''">prov,</if>
+            <if test="city != null and city != ''">city,</if>
+            <if test="area != null and area != ''">area,</if>
+            <if test="address != null and address != ''">address,</if>
+            <if test="phone != null and phone != ''">phone,</if>
+            <if test="expectWeight != null">expect_weight,</if>
+            <if test="actualWeight != null">actual_weight,</if>
+            <if test="isNow != null">is_now,</if>
+            <if test="expectTime != null">expect_time,</if>
+            <if test="receiveAddId != null">receive_add_id,</if>
+            <if test="expressNum != null">express_num,</if>
+            <if test="expressPrice != null">express_price,</if>
+            <if test="expressVlo != null">express_vlo,</if>
+            <if test="expressStatus != null">express_status,</if>
+            <if test="expressUpdateTime != null">express_update_time,</if>
+            <if test="courier != null">courier,</if>
+            <if test="channelNum != null">channel_num,</if>
+            <if test="channelSource != null">channel_source,</if>
+            <if test="orderStatus != null">order_status,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="cacelReason != null">cacel_reason,</if>
+            <if test="billingTime != null">billing_time,</if>
+            <if test="orderNum != null and orderNum != ''">order_num,</if>
+            <if test="statu != null and statu != ''">statu,</if>
+            <if test="authCode != null">auth_code,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="user != null and user != ''">#{user},</if>
+            <if test="name != null and name != ''">#{name},</if>
+            <if test="prov != null and prov != ''">#{prov},</if>
+            <if test="city != null and city != ''">#{city},</if>
+            <if test="area != null and area != ''">#{area},</if>
+            <if test="address != null and address != ''">#{address},</if>
+            <if test="phone != null and phone != ''">#{phone},</if>
+            <if test="expectWeight != null">#{expectWeight},</if>
+            <if test="actualWeight != null">#{actualWeight},</if>
+            <if test="isNow != null">#{isNow},</if>
+            <if test="expectTime != null">#{expectTime},</if>
+            <if test="receiveAddId != null">#{receiveAddId},</if>
+            <if test="expressNum != null">#{expressNum},</if>
+            <if test="expressPrice != null">#{expressPrice},</if>
+            <if test="expressVlo != null">#{expressVlo},</if>
+            <if test="expressStatus != null">#{expressStatus},</if>
+            <if test="expressUpdateTime != null">#{expressUpdateTime},</if>
+            <if test="courier != null">#{courier},</if>
+            <if test="channelNum != null">#{channelNum},</if>
+            <if test="channelSource != null">#{channelSource},</if>
+            <if test="orderStatus != null">#{orderStatus},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="cacelReason != null">#{cacelReason},</if>
+            <if test="billingTime != null">#{billingTime},</if>
+            <if test="orderNum != null and orderNum != ''">#{orderNum},</if>
+            <if test="statu != null and statu != ''">#{statu},</if>
+            <if test="authCode != null and authCode != ''">#{authCode},</if>
+         </trim>
+    </insert>
+
+    <update id="updateFunRecycle" parameterType="FunRecycle">
+        update fun_recycle
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="user != null and user != ''">user = #{user},</if>
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="prov != null and prov != ''">prov = #{prov},</if>
+            <if test="city != null and city != ''">city = #{city},</if>
+            <if test="area != null and area != ''">area = #{area},</if>
+            <if test="address != null and address != ''">address = #{address},</if>
+            <if test="phone != null and phone != ''">phone = #{phone},</if>
+            <if test="expectWeight != null">expect_weight = #{expectWeight},</if>
+            <if test="actualWeight != null">actual_weight = #{actualWeight},</if>
+            <if test="isNow != null">is_now = #{isNow},</if>
+            <if test="expectTime != null">expect_time = #{expectTime},</if>
+            <if test="receiveAddId != null">receive_add_id = #{receiveAddId},</if>
+            <if test="expressNum != null">express_num = #{expressNum},</if>
+            <if test="expressPrice != null">express_price = #{expressPrice},</if>
+            <if test="expressVlo != null">express_vlo = #{expressVlo},</if>
+            <if test="expressStatus != null">express_status = #{expressStatus},</if>
+            <if test="expressUpdateTime != null">express_update_time = #{expressUpdateTime},</if>
+            <if test="courier != null">courier = #{courier},</if>
+            <if test="channelNum != null">channel_num = #{channelNum},</if>
+            <if test="channelSource != null">channel_source = #{channelSource},</if>
+            <if test="orderStatus != null">order_status = #{orderStatus},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="cacelReason != null">cacel_reason = #{cacelReason},</if>
+            <if test="billingTime != null">billing_time = #{billingTime},</if>
+            <if test="orderNum != null and orderNum != ''">order_num = #{orderNum},</if>
+            <if test="statu != null and statu != ''">statu = #{statu},</if>
+            <if test="authCode != null and authCode != ''">auth_code = #{authCode},</if>
+        </trim>
+        where recycleID = #{recycleID}
+    </update>
+
+    <delete id="deleteFunRecycleByRecycleID" parameterType="Long">
+        delete from fun_recycle where recycleID = #{recycleID}
+    </delete>
+
+    <delete id="deleteFunRecycleByRecycleIDs" parameterType="String">
+        delete from fun_recycle where recycleID in 
+        <foreach item="recycleID" collection="array" open="(" separator="," close=")">
+            #{recycleID}
+        </foreach>
+    </delete>
+
+</mapper>

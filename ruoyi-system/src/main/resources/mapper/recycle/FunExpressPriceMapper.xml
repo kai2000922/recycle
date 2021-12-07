@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.recycle.mapper.FunExpressPriceMapper">
+    
+    <resultMap type="FunExpressPrice" id="FunExpressPriceResult">
+        <result property="outsetPlace"    column="outset_place"    />
+        <result property="outsetProv"    column="outset_prov"    />
+        <result property="outsetCity"    column="outset_city"    />
+        <result property="outsetName"    column="outset_name"    />
+        <result property="arriveProv"    column="arrive_prov"    />
+        <result property="arriveCity"    column="arrive_city"    />
+        <result property="arriveName"    column="arrive_name"    />
+        <result property="city2city"    column="city2city"    />
+        <result property="standardFirst"    column="standard_first"    />
+        <result property="standardContinue"    column="standard_continue"    />
+        <result property="bigFirst"    column="big_first"    />
+        <result property="bigContinue"    column="big_continue"    />
+    </resultMap>
+
+    <sql id="selectFunExpressPriceVo">
+        select outset_place, outset_prov, outset_city, outset_name, arrive_prov, arrive_city, arrive_name, city2city, standard_first, standard_continue, big_first, big_continue from fun_express_price
+    </sql>
+
+    <select id="selectFunExpressPriceList" parameterType="FunExpressPrice" resultMap="FunExpressPriceResult">
+        <include refid="selectFunExpressPriceVo"/>
+        <where>  
+            <if test="outsetProv != null  and outsetProv != ''"> and outset_prov = #{outsetProv}</if>
+            <if test="outsetCity != null  and outsetCity != ''"> and outset_city = #{outsetCity}</if>
+            <if test="outsetName != null  and outsetName != ''"> and outset_name like concat('%', #{outsetName}, '%')</if>
+            <if test="arriveProv != null  and arriveProv != ''"> and arrive_prov = #{arriveProv}</if>
+            <if test="arriveCity != null  and arriveCity != ''"> and arrive_city = #{arriveCity}</if>
+            <if test="arriveName != null  and arriveName != ''"> and arrive_name like concat('%', #{arriveName}, '%')</if>
+            <if test="city2city != null  and city2city != ''"> and city2city = #{city2city}</if>
+        </where>
+    </select>
+    
+    <select id="selectFunExpressPriceByOutsetPlace" parameterType="String" resultMap="FunExpressPriceResult">
+        <include refid="selectFunExpressPriceVo"/>
+        where outset_place = #{outsetPlace}
+    </select>
+        
+    <insert id="insertFunExpressPrice" parameterType="FunExpressPrice">
+        insert into fun_express_price
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="outsetPlace != null">outset_place,</if>
+            <if test="outsetProv != null">outset_prov,</if>
+            <if test="outsetCity != null">outset_city,</if>
+            <if test="outsetName != null">outset_name,</if>
+            <if test="arriveProv != null">arrive_prov,</if>
+            <if test="arriveCity != null">arrive_city,</if>
+            <if test="arriveName != null">arrive_name,</if>
+            <if test="city2city != null">city2city,</if>
+            <if test="standardFirst != null">standard_first,</if>
+            <if test="standardContinue != null">standard_continue,</if>
+            <if test="bigFirst != null">big_first,</if>
+            <if test="bigContinue != null">big_continue,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="outsetPlace != null">#{outsetPlace},</if>
+            <if test="outsetProv != null">#{outsetProv},</if>
+            <if test="outsetCity != null">#{outsetCity},</if>
+            <if test="outsetName != null">#{outsetName},</if>
+            <if test="arriveProv != null">#{arriveProv},</if>
+            <if test="arriveCity != null">#{arriveCity},</if>
+            <if test="arriveName != null">#{arriveName},</if>
+            <if test="city2city != null">#{city2city},</if>
+            <if test="standardFirst != null">#{standardFirst},</if>
+            <if test="standardContinue != null">#{standardContinue},</if>
+            <if test="bigFirst != null">#{bigFirst},</if>
+            <if test="bigContinue != null">#{bigContinue},</if>
+         </trim>
+    </insert>
+
+    <update id="updateFunExpressPrice" parameterType="FunExpressPrice">
+        update fun_express_price
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="outsetProv != null">outset_prov = #{outsetProv},</if>
+            <if test="outsetCity != null">outset_city = #{outsetCity},</if>
+            <if test="outsetName != null">outset_name = #{outsetName},</if>
+            <if test="arriveProv != null">arrive_prov = #{arriveProv},</if>
+            <if test="arriveCity != null">arrive_city = #{arriveCity},</if>
+            <if test="arriveName != null">arrive_name = #{arriveName},</if>
+            <if test="city2city != null">city2city = #{city2city},</if>
+            <if test="standardFirst != null">standard_first = #{standardFirst},</if>
+            <if test="standardContinue != null">standard_continue = #{standardContinue},</if>
+            <if test="bigFirst != null">big_first = #{bigFirst},</if>
+            <if test="bigContinue != null">big_continue = #{bigContinue},</if>
+        </trim>
+        where outset_place = #{outsetPlace}
+    </update>
+
+    <delete id="deleteFunExpressPriceByOutsetPlace" parameterType="String">
+        delete from fun_express_price where outset_place = #{outsetPlace}
+    </delete>
+
+    <delete id="deleteFunExpressPriceByOutsetPlaces" parameterType="String">
+        delete from fun_express_price where outset_place in 
+        <foreach item="outsetPlace" collection="array" open="(" separator="," close=")">
+            #{outsetPlace}
+        </foreach>
+    </delete>
+
+</mapper>

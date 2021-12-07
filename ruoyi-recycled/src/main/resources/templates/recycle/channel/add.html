@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('新增渠道信息')" />
+</head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-channel-add">
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">渠道名称：</label>
+                <div class="col-sm-8">
+                    <input name="channelName" class="form-control" type="text" required>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">计数：</label>
+                <div class="col-sm-8">
+                    <input name="counter" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">页面：</label>
+                <div class="col-sm-8">
+                    <div class="radio-box" th:each="dict : ${@dict.getType('fun_pages')}">
+                        <input type="radio" th:id="${'pages_' + dict.dictCode}" name="pages" th:value="${dict.dictValue}" th:checked="${dict.default}">
+                        <label th:for="${'pages_' + dict.dictCode}" th:text="${dict.dictLabel}"></label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">备注：</label>
+                <div class="col-sm-8">
+                    <input name="remark" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">商品ID：</label>
+                <div class="col-sm-8">
+                    <input name="goodsID" class="form-control" type="text">
+                </div>
+            </div>
+        </form>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        var prefix = ctx + "recycle/channel"
+        $("#form-channel-add").validate({
+            focusCleanup: true
+        });
+
+        function submitHandler() {
+            if ($.validate.form()) {
+                $.operate.save(prefix + "/add", $('#form-channel-add').serialize());
+            }
+        }
+    </script>
+</body>
+</html>
