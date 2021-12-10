@@ -114,9 +114,9 @@ public class FunChannelController extends BaseController {
     @PostMapping("/add")
     @ResponseBody
     public AjaxResult addSave(FunChannel funChannel) {
-        funChannel.setLinks(preLinks + funChannel.getPages() + "&channelName=" + funChannel.getChannelName());
+        funChannel.setLinks(preLinks + funChannel.getPages() + "?channelName=" + funChannel.getChannelName());
         if (StringUtils.isNotEmpty(funChannel.getGoodsID())) {
-            funChannel.setLinks(funChannel.getLinks() + "&goodsID=" + funChannel.getGoodsID() + "&from=shopping");
+            funChannel.setLinks(preLinks + funChannel.getPages() + "?goodsID=" + funChannel.getGoodsID() + "&channelName=" + funChannel.getChannelName() + "&from=shopping");
         }
         return toAjax(funChannelService.insertFunChannel(funChannel));
     }

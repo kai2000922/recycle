@@ -163,7 +163,9 @@ public class FunGoodsController extends BaseController {
     @ResponseBody
     public AjaxResult getStoreList() {
         List<String> list = new ArrayList<>();
-        List<FunGoods> goodsList = funGoodsService.selectFunGoodsList(null);
+        FunGoods temp = new FunGoods();
+        temp.setChannel("1");
+        List<FunGoods> goodsList = funGoodsService.selectFunGoodsList(temp);
         for (FunGoods goods : goodsList) {
             JSONObject object = new JSONObject();
             object.put("img", goods.getOrderImages());
