@@ -135,6 +135,7 @@ public class FunGoodsController extends BaseController {
         return toAjax(funGoodsService.deleteFunGoodsByGoodIDs(ids));
     }
 
+    //获取首页Banner
     @GetMapping("/getBanner")
     @ResponseBody
     public AjaxResult getBanned() {
@@ -147,6 +148,7 @@ public class FunGoodsController extends BaseController {
         }
     }
 
+    //获取商城页Banner
     @GetMapping("/getStore")
     @ResponseBody
     public AjaxResult getStore() {
@@ -159,6 +161,7 @@ public class FunGoodsController extends BaseController {
         }
     }
 
+    //获取传送带接口
     @GetMapping("/getStoreList")
     @ResponseBody
     public AjaxResult getStoreList() {

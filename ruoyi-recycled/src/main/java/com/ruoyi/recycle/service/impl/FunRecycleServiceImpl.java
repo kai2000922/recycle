@@ -169,6 +169,8 @@ public class FunRecycleServiceImpl implements IFunRecycleService {
         packageInfo.setTotalNumber(1);
         packageInfo.setCargoName("衣服");
         packageInfo.setTotalWeight(funRecycle.getExpectWeight());
+        if (funRecycle.getExpectWeight() >= 20)
+            packageInfo.setTotalWeight(32L);
         packageInfo.setDeliveryType("1");
 
         //订单

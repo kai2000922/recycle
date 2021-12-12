@@ -155,6 +155,7 @@ public class FunRecycleController extends BaseController {
         funRecycle.setOrderNum(funRecycleService.getOrderByChannel(funRecycle.getChannelNum()));
         funRecycle.setOrderStatus(StatusConfig.order_wait_get);
         funRecycle.setStatu("0");
+        funRecycle.setCacelReason("实时订单已创建");
         if (sendResp != null)
             funRecycle.setExpressNum(sendResp.getMailNo());
 
@@ -327,7 +328,6 @@ public class FunRecycleController extends BaseController {
     @ResponseBody
     @Scheduled(fixedDelay = 1000 * 60 * 30)
     public void sendRequest() {
-
         //每隔半小时定时查询订单状态
         if (new Date().getHours() < 9 || new Date().getHours() > 19)
             return;

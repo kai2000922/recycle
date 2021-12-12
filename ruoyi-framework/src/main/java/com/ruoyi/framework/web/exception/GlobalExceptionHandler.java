@@ -64,7 +64,7 @@ public class GlobalExceptionHandler
     {
         String requestURI = request.getRequestURI();
         log.error("请求地址'{}',发生未知异常.", requestURI, e);
-        return AjaxResult.error("系统繁忙，请稍后再试！");
+        return AjaxResult.error("系统繁忙，请稍后再试，或联系客服！");
     }
 
     /**
@@ -75,7 +75,7 @@ public class GlobalExceptionHandler
     {
         String requestURI = request.getRequestURI();
         log.error("请求地址'{}',发生系统异常.", requestURI, e);
-        return AjaxResult.error("系统繁忙，请稍后再试！");
+        return AjaxResult.error("系统繁忙，请稍后再试，或联系客服！");
     }
 
     /**
