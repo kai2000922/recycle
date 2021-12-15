@@ -8,7 +8,8 @@ public class AliPayApiConfig {
     public static final String CHARSET = "UTF-8";
     public static final String ALIPAY_PUBLIC_KEY = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA3CdQi9wgTTKgqPwhpUt67iyQVAoFV+/7hMOabyhCL49po2IlxbAqQmOzUPqgzgNgxGv1aOuQyjeN/bHNalIGNDKzLqvR6Ywjktrrjl1GbHcblVRL9jXZPmTg9gZ0ZsGgM/T/MIVmjO06NCQQB5mZ2TUVOds95y9m3bAys48rFfGcQAc37wTT2EtM+QDLW/enBgzdt7jbGB5rN2yB3w0j9oV/kGReJV+/58aC4rCDXGlxy/PBn7bxtdvcEIUzNEUofJpQpQK1NRXdFYdkLiYNPDy8P/4cIIE2nPOdjm3T3wcltk/kXoetfY3thsUotVoqnxVmHrxF0r4PG1RuHdMMOwIDAQAB";
     public static final String SIGN_TYPE = "RSA2";
-    public static final String TEMPLATE_ID = "20211209000730019472006PWLJE";
+    public static final String TEMPLATE_ID_30 = "20211215000730019472006QWC1T";
+    public static final String TEMPLATE_ID_18 = "20211215000730019472006QX47K";
 
     String app = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAl5fd5wn0H9pzC8/Gz3mY2WT4On9o3nl96C28CzNWamvv6dOiZmyfxM0Qq8fNc37w3qqbIhgr+rZSf0CJebecd7rsjPc5sQa/K3DFAVxwIPwPEdYfNW9tPV2Sl26bNX8UYWYmX8OYzWZhNdd8bT+r8nd8+3ivEvFzoEevQ5oJo48AtJcICo5/Q0f44pJv7PgnNFyp4il1rYOIwG/xvh/cERg6vGuAUSfm24uhQVyIb3mnzw4jx7Kh1FUDvJ1WLNTTxu+M62GE+1xgMMxMVwwG2y43DqQMNb6gOrnO6Kyjju1Eltxu25QPCEtPw3adckteFuJn0klc8xA/R00CSgWQ0wIDAQAB";
 

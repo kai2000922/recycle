@@ -9,12 +9,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="configName"    column="config_name"    />
         <result property="configImgPath"    column="config_img_path"    />
         <result property="toPages"    column="to_pages"    />
-        <result property="goodsId"    column="goods_id"    />
+        <result property="param"    column="param"    />
         <result property="createTime"    column="create_time"    />
     </resultMap>
 
     <sql id="selectFunMiniprogramConfigVo">
-        select config_id, config_name, config_img_path, to_pages, goods_id, create_time from fun_miniprogram_config
+        select config_id, config_name, config_img_path, to_pages, param, create_time from fun_miniprogram_config
     </sql>
 
     <select id="selectFunMiniprogramConfigList" parameterType="FunMiniprogramConfig" resultMap="FunMiniprogramConfigResult">
@@ -36,7 +36,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="configName != null and configName != ''">config_name,</if>
             <if test="configImgPath != null and configImgPath != ''">config_img_path,</if>
             <if test="toPages != null and toPages != ''">to_pages,</if>
-            <if test="goodsId != null">goods_id,</if>
+            <if test="param != null">param,</if>
             <if test="createTime != null">create_time,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -44,7 +44,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="configName != null and configName != ''">#{configName},</if>
             <if test="configImgPath != null and configImgPath != ''">#{configImgPath},</if>
             <if test="toPages != null and toPages != ''">#{toPages},</if>
-            <if test="goodsId != null">#{goodsId},</if>
+            <if test="param != null">#{param},</if>
             <if test="createTime != null">#{createTime},</if>
          </trim>
     </insert>
@@ -55,7 +55,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="configName != null and configName != ''">config_name = #{configName},</if>
             <if test="configImgPath != null and configImgPath != ''">config_img_path = #{configImgPath},</if>
             <if test="toPages != null and toPages != ''">to_pages = #{toPages},</if>
-            <if test="goodsId != null">goods_id = #{goodsId},</if>
+            <if test="param != null">param = #{param},</if>
             <if test="createTime != null">create_time = #{createTime},</if>
         </trim>
         where config_id = #{configId}

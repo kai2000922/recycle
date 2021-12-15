@@ -22,7 +22,7 @@ public interface IAliPayService {
 
     void createCoupon();
 
-    void sendCoupon(String userID);
+    void sendCoupon(String userID, String templateID);
 
     AlipayOpenAppMiniTemplatemessageSendResponse sendMessage(String userID, String formID, String templateID, String page, Object data);
 

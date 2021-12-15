@@ -32,7 +32,7 @@ public class FunMiniprogramConfig extends BaseEntity
 
     /** 商品ID */
     @Excel(name = "商品ID")
-    private Long goodsId;
+    private String param;
 
     public void setConfigId(Long configId) 
     {
@@ -70,14 +70,14 @@ public class FunMiniprogramConfig extends BaseEntity
     {
         return toPages;
     }
-    public void setGoodsId(Long goodsId) 
+    public void setParam(String goodsId)
     {
-        this.goodsId = goodsId;
+        this.param = goodsId;
     }
 
-    public Long getGoodsId() 
+    public String getParam()
     {
-        return goodsId;
+        return param;
     }
 
     @Override
@@ -87,7 +87,7 @@ public class FunMiniprogramConfig extends BaseEntity
             .append("configName", getConfigName())
             .append("configImgPath", getConfigImgPath())
             .append("toPages", getToPages())
-            .append("goodsId", getGoodsId())
+            .append("goodsId", getParam())
             .append("createTime", getCreateTime())
             .toString();
     }

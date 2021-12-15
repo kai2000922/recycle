@@ -14,10 +14,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="address"    column="address"    />
         <result property="control"    column="control"    />
         <result property="counter"    column="counter"    />
+        <result property="mark"    column="mark"    />
     </resultMap>
 
     <sql id="selectFunRecieveVo">
-        select receiveID, name, phone, prov, city, area, address, control, counter from fun_recieve
+        select receiveID, name, phone, prov, city, area, address, control, counter, mark from fun_recieve
     </sql>
 
     <select id="selectFunRecieveList" parameterType="FunRecieve" resultMap="FunRecieveResult">

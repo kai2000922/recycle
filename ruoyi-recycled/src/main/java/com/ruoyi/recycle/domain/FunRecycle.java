@@ -100,7 +100,7 @@ public class FunRecycle extends BaseEntity {
      * 收货厂商ID
      */
     @Excel(name = "收货厂商ID")
-    private Long receiveAddId;
+    private String receiveAddId;
 
     /**
      * 运单号码
@@ -292,11 +292,11 @@ public class FunRecycle extends BaseEntity {
         return expectTime;
     }
 
-    public void setReceiveAddId(Long receiveAddId) {
+    public void setReceiveAddId(String receiveAddId) {
         this.receiveAddId = receiveAddId;
     }
 
-    public Long getReceiveAddId() {
+    public String getReceiveAddId() {
         return receiveAddId;
     }
 

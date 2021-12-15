@@ -76,7 +76,7 @@ public class FunAliController {
 
     @GetMapping("/sendCoupon")
     public AjaxResult sendCoupon(String userID) {
-        aliPayService.sendCoupon(userID);
+        aliPayService.sendCoupon(userID, AliPayApiConfig.TEMPLATE_ID_30);
         return AjaxResult.success();
     }
 

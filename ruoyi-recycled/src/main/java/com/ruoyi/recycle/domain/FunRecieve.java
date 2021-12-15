@@ -67,6 +67,20 @@ public class FunRecieve extends BaseEntity {
     @Excel(name = "计数")
     private Long counter;
 
+    @Excel(name = "备注")
+    private String mark;
+
+    public FunRecieve() {
+    }
+
+    public String getMark() {
+        return mark;
+    }
+
+    public void setMark(String mark) {
+        this.mark = mark;
+    }
+
     public void setReceiveID(Long receiveID) {
         this.receiveID = receiveID;
     }

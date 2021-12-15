@@ -43,7 +43,7 @@ public class AliPayServiceImpl implements IAliPayService {
     public String getTradeNo(String title, double price, String userID) {
         AlipayTradeCreateRequest request = new AlipayTradeCreateRequest();
         JSONObject bizContent = new JSONObject();
-        bizContent.put("out_trade_no", CommonUtil.getUniqueNum());
+        bizContent.put("out_trade_no", CommonUtil.getUniqueNo());
         bizContent.put("total_amount", price);
         bizContent.put("subject", title);
         bizContent.put("buyer_id", userID);
@@ -97,7 +97,11 @@ public class AliPayServiceImpl implements IAliPayService {
         AlipayTradeRefundRequest request = new AlipayTradeRefundRequest();
         JSONObject bizContent = new JSONObject();
         bizContent.put("trade_no", orders.getTradeNo());
-        bizContent.put("refund_amount", orders.getZfPrice());
+        if (StringUtils.isNotEmpty(orders.getMark())){
+            bizContent.put("refund_amount", orders.getMark());
+        }else {
+            bizContent.put("refund_amount", orders.getZfPrice());
+        }
 
         request.setBizContent(bizContent.toString());
         return (AlipayTradeRefundResponse) sendRequest(request, "退款");
@@ -117,23 +121,23 @@ public class AliPayServiceImpl implements IAliPayService {
         Date date = new Date();
         date.setMonth(date.getMonth() + 2);
         bizContent.put("publish_end_time", DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD_HH_MM_SS, date));
-        bizContent.put("out_biz_no", CommonUtil.getUniqueNum());
+        bizContent.put("out_biz_no", CommonUtil.getUniqueNo());
         bizContent.put("voucher_description", "[\"1、本券不可兑换现金，不可找零。\",\"2、每个用户最多可以领取1张。\",\"3、如果订单发生退款，优惠券无法退还。\"]");
-        bizContent.put("voucher_quantity", "1000");
-        bizContent.put("floor_amount", "39.9");
-        bizContent.put("amount", "30");
+        bizContent.put("voucher_quantity", "10000");
+        bizContent.put("floor_amount", "18");
+        bizContent.put("amount", "9.5");
         bizContent.put("voucher_available_time", "[]");
         bizContent.put("rule_conf", "{\"PID\": \"2088241774172948\"}");
         request.setBizContent(bizContent.toString());
         AlipayMarketingCashlessvoucherTemplateCreateResponse response = (AlipayMarketingCashlessvoucherTemplateCreateResponse) sendRequest(request, "创建优惠券");
     }
 
-    public void sendCoupon(String userID) {
+    public void sendCoupon(String userID, String templateID) {
         AlipayMarketingVoucherSendRequest request = new AlipayMarketingVoucherSendRequest();
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("template_id", AliPayApiConfig.TEMPLATE_ID);
+        jsonObject.put("template_id", templateID);
         jsonObject.put("user_id", userID);
-        jsonObject.put("out_biz_no", CommonUtil.getUniqueNum());
+        jsonObject.put("out_biz_no", CommonUtil.getUniqueNo());
         request.setBizContent(jsonObject.toString());
 
         AlipayMarketingVoucherSendResponse response = (AlipayMarketingVoucherSendResponse) sendRequest(request, "发送优惠券");

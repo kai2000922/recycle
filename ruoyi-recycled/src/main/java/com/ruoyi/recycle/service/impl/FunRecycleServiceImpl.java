@@ -162,7 +162,7 @@ public class FunRecycleServiceImpl implements IFunRecycleService {
         receiver.setProvince(funRecieve.getProv());
         receiver.setCity(funRecieve.getCity());
         receiver.setCounty(funRecieve.getArea());
-        funRecycle.setReceiveAddId(funRecieve.getReceiveID());
+        funRecycle.setReceiveAddId(funRecieve.getMark());
 
         //包裹信息
         PackageInfo packageInfo = new PackageInfo();
@@ -209,7 +209,7 @@ public class FunRecycleServiceImpl implements IFunRecycleService {
 
     //使用同步功能确保渠道号码的唯一性
     public synchronized String getChannelNum() {
-        return CommonUtil.getUniqueNum();
+        return CommonUtil.getUniqueNo();
     }
 
     public FunRecycle selectFunRecycleByRecycleOrder(Long orderNum) {

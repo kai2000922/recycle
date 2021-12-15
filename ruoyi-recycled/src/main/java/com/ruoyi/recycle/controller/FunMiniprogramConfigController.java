@@ -139,10 +139,19 @@ public class FunMiniprogramConfigController extends BaseController
 
         for (FunMiniprogramConfig config : list){
             if (config.getConfigName().equals("Banner")){
+                if (config.getToPages().equals("0")){
+                    config.setToPages(config.getParam());
+                }
                 banners.add(config);
             }else if (config.getConfigName().equals("Store")){
+                if (config.getToPages().equals("0")){
+                    config.setToPages(config.getParam());
+                }
                 stores.add(config);
             }else if (config.getConfigName().equals("activity")){
+                if (config.getToPages().equals("0")){
+                    config.setToPages(config.getParam());
+                }
                 activities.add(config);
             }
             else {

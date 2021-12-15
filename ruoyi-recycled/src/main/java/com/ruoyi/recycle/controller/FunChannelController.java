@@ -116,7 +116,7 @@ public class FunChannelController extends BaseController {
     public AjaxResult addSave(FunChannel funChannel) {
         funChannel.setLinks(preLinks + funChannel.getPages() + "?channelName=" + funChannel.getChannelName());
         if (StringUtils.isNotEmpty(funChannel.getGoodsID())) {
-            funChannel.setLinks(preLinks + funChannel.getPages() + "?goodsID=" + funChannel.getGoodsID() + "&channelName=" + funChannel.getChannelName() + "&from=shopping");
+            funChannel.setLinks(preLinks + funChannel.getPages() + "?goodsID=" + funChannel.getGoodsID() + "_" + funChannel.getChannelName());
         }
         return toAjax(funChannelService.insertFunChannel(funChannel));
     }

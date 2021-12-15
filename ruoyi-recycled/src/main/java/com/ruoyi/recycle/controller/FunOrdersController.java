@@ -7,6 +7,7 @@ import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.enums.BusinessType;
+import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.recycle.config.AliPayApiConfig;
 import com.ruoyi.recycle.config.StatusConfig;
@@ -146,7 +147,7 @@ public class FunOrdersController extends BaseController {
         }
 
         funOrders.setStatu("0");
-        funOrders.setOrdersNum(Long.valueOf(CommonUtil.getUniqueNumer()));
+        funOrders.setOrdersNum(Long.valueOf(CommonUtil.getUniqueNumber()));
 
         try {
             funOrdersService.insertFunOrders(funOrders);
@@ -217,7 +218,7 @@ public class FunOrdersController extends BaseController {
             AlipayTradeRefundResponse response = aliPayService.refundOrder(funOrders.getTradeNo());
             if (response == null || !response.getCode().equals("10000"))
                 return AjaxResult.error("退款失败！");
-            orders.setStatu(StatusConfig.goods_refund_succeed);
+            funOrders.setOrdersStatus(StatusConfig.goods_refund_succeed);
             return toAjax(funOrdersService.updateFunOrders(funOrders));
         }
         return AjaxResult.error("无效请求");
@@ -252,8 +253,13 @@ public class FunOrdersController extends BaseController {
             return AjaxResult.error("查询订单失败！：" + response.getMsg());
         }
 
+        StringUtils.isNotEmpty(response.getTotalAmount());
+
         if (response.getTradeStatus().equals(AliPayApiConfig.TRADE_SUCCESS)) {
-            funOrders.setZfPrice(Double.parseDouble(response.getTotalAmount()));
+            if (StringUtils.isNotEmpty(response.getTotalAmount()) && Double.parseDouble(response.getTotalAmount()) > Double.parseDouble(response.getBuyerPayAmount())){
+                funOrders.setMark(response.getTotalAmount());
+            }
+            funOrders.setZfPrice(Double.parseDouble(response.getBuyerPayAmount()));
             funOrders.setOrdersStatus("未发货");
         } else if (response.getTradeStatus().equals(AliPayApiConfig.WAIT_BUYER_PAY)) {
             funOrders.setOrdersStatus("待支付");

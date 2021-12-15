@@ -10,6 +10,7 @@ import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.poi.ExcelUtil;
+import com.ruoyi.recycle.config.AliPayApiConfig;
 import com.ruoyi.recycle.config.StatusConfig;
 import com.ruoyi.recycle.domain.FunRecycle;
 import com.ruoyi.recycle.domain.FunUser;
@@ -179,7 +180,8 @@ public class FunRecycleController extends BaseController {
         }
 
         //发送优惠券
-        aliPayService.sendCoupon(funRecycle.getUser());
+        aliPayService.sendCoupon(funRecycle.getUser(), AliPayApiConfig.TEMPLATE_ID_30);
+        aliPayService.sendCoupon(funRecycle.getUser(), AliPayApiConfig.TEMPLATE_ID_18);
 
         if (StringUtils.isEmpty(funRecycle.getAuthCode()))
             return AjaxResult.success();
