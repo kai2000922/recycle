@@ -1,5 +1,7 @@
 package com.ruoyi.recycle.service.impl;
 
+import com.alipay.api.response.AlipayTradeQueryResponse;
+import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.text.Convert;
 import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.common.exception.job.TaskException;
@@ -7,8 +9,11 @@ import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.quartz.domain.SysJob;
 import com.ruoyi.quartz.service.ISysJobService;
+import com.ruoyi.recycle.config.AliPayApiConfig;
+import com.ruoyi.recycle.config.StatusConfig;
 import com.ruoyi.recycle.domain.FunOrders;
 import com.ruoyi.recycle.mapper.FunOrdersMapper;
+import com.ruoyi.recycle.service.IAliPayService;
 import com.ruoyi.recycle.service.IFunOrdersService;
 import org.quartz.SchedulerException;
 import org.slf4j.Logger;
@@ -32,6 +37,8 @@ public class FunOrdersServiceImpl implements IFunOrdersService {
     private FunOrdersMapper funOrdersMapper;
     @Autowired
     private ISysJobService jobService;
+    @Resource
+    private IAliPayService aliPayService;
 
     private static final Logger log = LoggerFactory.getLogger(FunOrdersServiceImpl.class);
 
@@ -182,4 +189,32 @@ public class FunOrdersServiceImpl implements IFunOrdersService {
             e.printStackTrace();
         }
     }
+
+    public void queryOrderStatue(){
+        FunOrders query = new FunOrders();
+        query.setStatu(StatusConfig.goods_no_pay);
+        List<FunOrders> orders = selectFunOrdersList(query);
+
+        for (FunOrders order : orders){
+            AlipayTradeQueryResponse response = aliPayService.queryOrder(order.getTradeNo());
+            if (!response.getCode().equals("10000")) {
+                log.error("查询订单失败！：" + response.getMsg());
+            }
+
+            if (response.getTradeStatus().equals(AliPayApiConfig.TRADE_SUCCESS)){
+                if (StringUtils.isNotEmpty(response.getTotalAmount()) && Double.parseDouble(response.getTotalAmount()) > Double.parseDouble(response.getBuyerPayAmount())){
+                    order.setMark(response.getTotalAmount());
+                }
+                order.setZfPrice(Double.parseDouble(response.getBuyerPayAmount()));
+                order.setOrdersStatus("未发货");
+            }else{
+                if ((new Date().getDay() - order.getCreateTime().getDay()) > 5){
+                    order.setOrdersStatus(StatusConfig.goods_close);
+                }
+            }
+
+        }
+
+    }
+
 }

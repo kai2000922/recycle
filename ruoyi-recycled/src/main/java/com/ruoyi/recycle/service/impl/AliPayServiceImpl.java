@@ -14,6 +14,7 @@ import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.recycle.config.AliPayApiConfig;
 import com.ruoyi.recycle.config.StatusConfig;
+import com.ruoyi.recycle.domain.FunCoupon;
 import com.ruoyi.recycle.domain.FunOrders;
 import com.ruoyi.recycle.domain.FunRecycle;
 import com.ruoyi.recycle.domain.request.TemplateMessageInfo;
@@ -76,7 +77,7 @@ public class AliPayServiceImpl implements IAliPayService {
     }
 
     @Override
-    public AlipayTradeQueryResponse getOrderStatus(String orderNo) {
+    public AlipayTradeQueryResponse queryOrder(String orderNo) {
         AlipayTradeQueryRequest request = new AlipayTradeQueryRequest();
         JSONObject bizContent = new JSONObject();
         bizContent.put("trade_no", orderNo);
@@ -107,14 +108,14 @@ public class AliPayServiceImpl implements IAliPayService {
         return (AlipayTradeRefundResponse) sendRequest(request, "退款");
     }
 
-    public void createCoupon() {
+    public AlipayMarketingCashlessvoucherTemplateCreateResponse createCoupon(FunCoupon coupon) {
         AlipayMarketingCashlessvoucherTemplateCreateRequest request = new AlipayMarketingCashlessvoucherTemplateCreateRequest();
         JSONObject bizContent = new JSONObject();
         bizContent.put("voucher_type", "CASHLESS_FIX_VOUCHER");
         bizContent.put("brand_name", "回收小鸽");
         JSONObject period = new JSONObject();
         period.put("type", "RELATIVE");
-        period.put("duration", "7");
+        period.put("duration", coupon.getUsedDay());
         period.put("unit", "DAY");
         bizContent.put("voucher_valid_period", period.toJSONString());
         bizContent.put("publish_start_time", DateUtils.getTime());
@@ -123,13 +124,13 @@ public class AliPayServiceImpl implements IAliPayService {
         bizContent.put("publish_end_time", DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD_HH_MM_SS, date));
         bizContent.put("out_biz_no", CommonUtil.getUniqueNo());
         bizContent.put("voucher_description", "[\"1、本券不可兑换现金，不可找零。\",\"2、每个用户最多可以领取1张。\",\"3、如果订单发生退款，优惠券无法退还。\"]");
-        bizContent.put("voucher_quantity", "10000");
-        bizContent.put("floor_amount", "18");
-        bizContent.put("amount", "9.5");
+        bizContent.put("voucher_quantity", coupon.getNumbers());
+        bizContent.put("floor_amount", coupon.getMaxPrice());
+        bizContent.put("amount", coupon.getActPrice());
         bizContent.put("voucher_available_time", "[]");
         bizContent.put("rule_conf", "{\"PID\": \"2088241774172948\"}");
         request.setBizContent(bizContent.toString());
-        AlipayMarketingCashlessvoucherTemplateCreateResponse response = (AlipayMarketingCashlessvoucherTemplateCreateResponse) sendRequest(request, "创建优惠券");
+        return (AlipayMarketingCashlessvoucherTemplateCreateResponse) sendRequest(request, "创建优惠券");
     }
 
     public void sendCoupon(String userID, String templateID) {

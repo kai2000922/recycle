@@ -248,7 +248,7 @@ public class FunOrdersController extends BaseController {
             return AjaxResult.error("订单不存在");
         funOrders.setTradeNo(tradeNo);
         //查询订单状态
-        AlipayTradeQueryResponse response = aliPayService.getOrderStatus(funOrders.getTradeNo());
+        AlipayTradeQueryResponse response = aliPayService.queryOrder(funOrders.getTradeNo());
         if (!response.getCode().equals("10000")) {
             return AjaxResult.error("查询订单失败！：" + response.getMsg());
         }

@@ -60,7 +60,7 @@ public class FunAliController {
     @ApiOperation(value = "查询订单状态", notes = "根据状态码判断是否查询成功，查询成功后根据订单状态判断是否支付成功")
     @ApiImplicitParam(name = "orderNo", type = "String")
     public AjaxResult query(String orderNo) {
-        AlipayTradeQueryResponse response = aliPayService.getOrderStatus(orderNo);
+        AlipayTradeQueryResponse response = aliPayService.queryOrder(orderNo);
         if (response == null)
             return AjaxResult.error("查询订单状态失败");
         else
@@ -70,7 +70,6 @@ public class FunAliController {
     @GetMapping("/createCoupon")
     @ResponseBody
     public AjaxResult createCoupon() {
-        aliPayService.createCoupon();
         return AjaxResult.success();
     }
 

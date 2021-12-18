@@ -2,10 +2,8 @@ package com.ruoyi.recycle.service;
 
 import com.alipay.api.AlipayRequest;
 import com.alipay.api.AlipayResponse;
-import com.alipay.api.response.AlipayMerchantOrderSyncResponse;
-import com.alipay.api.response.AlipayOpenAppMiniTemplatemessageSendResponse;
-import com.alipay.api.response.AlipayTradeQueryResponse;
-import com.alipay.api.response.AlipayTradeRefundResponse;
+import com.alipay.api.response.*;
+import com.ruoyi.recycle.domain.FunCoupon;
 import com.ruoyi.recycle.domain.FunRecycle;
 import com.ruoyi.recycle.domain.request.TemplateMessageInfo;
 
@@ -16,11 +14,11 @@ public interface IAliPayService {
 
     String getUserIDByAuthCode(String authCode);
 
-    AlipayTradeQueryResponse getOrderStatus(String orderNo);
+    AlipayTradeQueryResponse queryOrder(String orderNo);
 
     AlipayTradeRefundResponse refundOrder(String tradeNo);
 
-    void createCoupon();
+    AlipayMarketingCashlessvoucherTemplateCreateResponse createCoupon(FunCoupon coupon);
 
     void sendCoupon(String userID, String templateID);
 

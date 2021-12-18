@@ -34,4 +34,6 @@ public class AliPayApiConfig {
     public static final String ImageID = "2021120200502200000043744747";
     public static final String ImageKey = "A*wtcpSJx7fqIAAAAAAAAAAAAAAeEuAQ";
 
+    public static final String pro_pages = "pages/hd/index";
+
 }

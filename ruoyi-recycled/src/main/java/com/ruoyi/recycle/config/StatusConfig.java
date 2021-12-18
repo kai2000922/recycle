@@ -22,4 +22,5 @@ public class StatusConfig {
     public static final String goods_done = "已完成";
     public static final String goods_refund = "退款中";
     public static final String goods_refund_succeed = "已退款";
+    public static final String goods_close = "已关闭";
 }

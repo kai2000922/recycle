@@ -12,16 +12,14 @@ import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.recycle.config.AliPayApiConfig;
 import com.ruoyi.recycle.config.StatusConfig;
+import com.ruoyi.recycle.domain.FunCoupon;
 import com.ruoyi.recycle.domain.FunRecycle;
 import com.ruoyi.recycle.domain.FunUser;
 import com.ruoyi.recycle.domain.express.SendOrderInfo;
 import com.ruoyi.recycle.domain.request.TemplateMessageInfo;
 import com.ruoyi.recycle.domain.response.CancelOrderInfoResp;
 import com.ruoyi.recycle.domain.response.SendOrderInfoResp;
-import com.ruoyi.recycle.service.IAliPayService;
-import com.ruoyi.recycle.service.IExpressService;
-import com.ruoyi.recycle.service.IFunRecycleService;
-import com.ruoyi.recycle.service.IFunUserService;
+import com.ruoyi.recycle.service.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -60,6 +58,8 @@ public class FunRecycleController extends BaseController {
     private IFunUserService userService;
     @Autowired
     private IAliPayService aliPayService;
+    @Autowired
+    private IFunCouponService couponService;
 
     //    @RequiresPermissions("recycle:recycle:view")
     @GetMapping()
@@ -180,8 +180,11 @@ public class FunRecycleController extends BaseController {
         }
 
         //发送优惠券
-        aliPayService.sendCoupon(funRecycle.getUser(), AliPayApiConfig.TEMPLATE_ID_30);
-        aliPayService.sendCoupon(funRecycle.getUser(), AliPayApiConfig.TEMPLATE_ID_18);
+        for (FunCoupon coupon : couponService.selectFunCouponList(null)){
+            if (coupon.getIsUsed().equals("0")){
+                aliPayService.sendCoupon(funRecycle.getUser(), coupon.getTemplates());
+            }
+        }
 
         if (StringUtils.isEmpty(funRecycle.getAuthCode()))
             return AjaxResult.success();

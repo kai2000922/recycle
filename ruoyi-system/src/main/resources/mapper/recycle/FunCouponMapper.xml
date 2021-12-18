@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.recycle.mapper.FunCouponMapper">
+    
+    <resultMap type="FunCoupon" id="FunCouponResult">
+        <result property="couponId"    column="coupon_id"    />
+        <result property="couponName"    column="coupon_name"    />
+        <result property="maxPrice"    column="max_price"    />
+        <result property="actPrice"    column="act_price"    />
+        <result property="numbers"    column="numbers"    />
+        <result property="templates"    column="templates"    />
+        <result property="usedDay"    column="used_day"    />
+        <result property="isUsed"    column="is_used"    />
+        <result property="createTime"    column="create_time"    />
+    </resultMap>
+
+    <sql id="selectFunCouponVo">
+        select coupon_id, coupon_name, max_price, act_price, numbers, templates, used_day, is_used, create_time from fun_coupon
+    </sql>
+
+    <select id="selectFunCouponList" parameterType="FunCoupon" resultMap="FunCouponResult">
+        <include refid="selectFunCouponVo"/>
+        <where>  
+            <if test="couponName != null  and couponName != ''"> and coupon_name = #{couponName}</if>
+            <if test="isUsed != null  and isUsed != ''"> and is_used = #{isUsed}</if>
+        </where>
+    </select>
+    
+    <select id="selectFunCouponByCouponId" parameterType="Long" resultMap="FunCouponResult">
+        <include refid="selectFunCouponVo"/>
+        where coupon_id = #{couponId}
+    </select>
+        
+    <insert id="insertFunCoupon" parameterType="FunCoupon">
+        insert into fun_coupon
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="couponId != null">coupon_id,</if>
+            <if test="couponName != null">coupon_name,</if>
+            <if test="maxPrice != null">max_price,</if>
+            <if test="actPrice != null">act_price,</if>
+            <if test="numbers != null">numbers,</if>
+            <if test="templates != null">templates,</if>
+            <if test="usedDay != null">used_day,</if>
+            <if test="isUsed != null">is_used,</if>
+            <if test="createTime != null">create_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="couponId != null">#{couponId},</if>
+            <if test="couponName != null">#{couponName},</if>
+            <if test="maxPrice != null">#{maxPrice},</if>
+            <if test="actPrice != null">#{actPrice},</if>
+            <if test="numbers != null">#{numbers},</if>
+            <if test="templates != null">#{templates},</if>
+            <if test="usedDay != null">#{usedDay},</if>
+            <if test="isUsed != null">#{isUsed},</if>
+            <if test="createTime != null">#{createTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateFunCoupon" parameterType="FunCoupon">
+        update fun_coupon
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="couponName != null">coupon_name = #{couponName},</if>
+            <if test="maxPrice != null">max_price = #{maxPrice},</if>
+            <if test="actPrice != null">act_price = #{actPrice},</if>
+            <if test="numbers != null">numbers = #{numbers},</if>
+            <if test="templates != null">templates = #{templates},</if>
+            <if test="usedDay != null">used_day = #{usedDay},</if>
+            <if test="isUsed != null">is_used = #{isUsed},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+        </trim>
+        where coupon_id = #{couponId}
+    </update>
+
+    <delete id="deleteFunCouponByCouponId" parameterType="Long">
+        delete from fun_coupon where coupon_id = #{couponId}
+    </delete>
+
+    <delete id="deleteFunCouponByCouponIds" parameterType="String">
+        delete from fun_coupon where coupon_id in 
+        <foreach item="couponId" collection="array" open="(" separator="," close=")">
+            #{couponId}
+        </foreach>
+    </delete>
+
+</mapper>
