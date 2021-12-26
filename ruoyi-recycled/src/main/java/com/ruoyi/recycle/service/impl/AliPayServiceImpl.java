@@ -14,6 +14,7 @@ import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.recycle.config.AliPayApiConfig;
 import com.ruoyi.recycle.config.StatusConfig;
+import com.ruoyi.recycle.controller.FunChannelController;
 import com.ruoyi.recycle.domain.FunCoupon;
 import com.ruoyi.recycle.domain.FunOrders;
 import com.ruoyi.recycle.domain.FunRecycle;
@@ -108,6 +109,7 @@ public class AliPayServiceImpl implements IAliPayService {
         return (AlipayTradeRefundResponse) sendRequest(request, "退款");
     }
 
+    //创建优惠券
     public AlipayMarketingCashlessvoucherTemplateCreateResponse createCoupon(FunCoupon coupon) {
         AlipayMarketingCashlessvoucherTemplateCreateRequest request = new AlipayMarketingCashlessvoucherTemplateCreateRequest();
         JSONObject bizContent = new JSONObject();
@@ -133,6 +135,7 @@ public class AliPayServiceImpl implements IAliPayService {
         return (AlipayMarketingCashlessvoucherTemplateCreateResponse) sendRequest(request, "创建优惠券");
     }
 
+    //发送优惠券
     public void sendCoupon(String userID, String templateID) {
         AlipayMarketingVoucherSendRequest request = new AlipayMarketingVoucherSendRequest();
         JSONObject jsonObject = new JSONObject();
@@ -144,6 +147,7 @@ public class AliPayServiceImpl implements IAliPayService {
         AlipayMarketingVoucherSendResponse response = (AlipayMarketingVoucherSendResponse) sendRequest(request, "发送优惠券");
     }
 
+    //AOP接口 记录所有的请求
     public AlipayResponse sendRequest(AlipayRequest request, String action) {
         log.info("——————————————" + action + "——————————————");
         log.info(String.valueOf(request.getTextParams()));
@@ -171,6 +175,7 @@ public class AliPayServiceImpl implements IAliPayService {
         return (AlipayOpenAppMiniTemplatemessageSendResponse) sendRequest(request, "发送模板消息");
     }
 
+    //发送模板消息
     public AlipayMerchantOrderSyncResponse sendOrderMessage(TemplateMessageInfo templateMessageInfo) {
 
         if (StringUtils.isEmpty(templateMessageInfo.getUserID()) || StringUtils.isEmpty(templateMessageInfo.getAuthCode()) || StringUtils.isEmpty(templateMessageInfo.getStatus())
@@ -265,6 +270,7 @@ public class AliPayServiceImpl implements IAliPayService {
         return (AlipayMerchantOrderSyncResponse) sendRequest(request, "发送订单消息");
     }
 
+    //回收订单转为模板
     public TemplateMessageInfo RecycleToTemplateInfo(FunRecycle funRecycle) {
         TemplateMessageInfo templateMessageInfo = new TemplateMessageInfo();
         templateMessageInfo.setUserID(funRecycle.getUser());
@@ -293,6 +299,102 @@ public class AliPayServiceImpl implements IAliPayService {
                 return null;
         }
         return templateMessageInfo;
+    }
+
+    //公益服务提报
+    public void createService() throws AlipayApiException {
+        AlipayCommerceIndustryServiceSubmitRequest request = new AlipayCommerceIndustryServiceSubmitRequest();
+//        request.setBizContent("{" +
+//                "\"service_type\":\"CAR_RENTAL\"," +
+//                "\"service_name\":\"回收行业回收小鸽服务\"," +
+//                "\"service_description\":\"回收小鸽到家服务提供优质服务,提升生活品质\"," +
+//                "\"service_action\":\"SERVICE_CREATE\"," +
+//                "\"service_url\":\"alipays://platformapi/startapp?appId=2021002188669037&page=pages/index/index\"," +
+//                "      \"extra_info\":[{" +
+//                "        \"extra_info_value\":\"xxxx\"," +
+//                "\"extra_info_key\":\"scene_type\"" +
+//                "        }]," +
+//                "\"industry_info\":\"{\\\"platform_info\\\":{\\\"platform_name\\\":\\\"回收小鸽回收服务\\\",\\\"platform_telephone\\\":\\\"400-8888-123\\\",\\\"service_citys\\\":\\\"全国\\\"},\\\"service_info\\\":{\\\"service_name\\\":\\\"回收\\\",\\\"service_type\\\":\\\"回收服务\\\",\\\"service_desc\\\":\\\"XXX\\\"}}\"" +
+//                "  }");
+        request.setBizContent("{" +
+                "\"service_type\":\"DOOR_RECYCLING\"," +
+                "\"service_name\":\"旧衣服回收小鸽\"," +
+                "\"service_description\":\"回收小鸽到家服务提供优质服务,提升生活品质\"," +
+                "\"service_action\":\"SERVICE_CREATE\"," +
+                "\"service_url\":\"alipays://platformapi/startapp?appId=2021002188669037&page=pages/index/index?channelName=gongyifuwu11\"," +
+                "      \"extra_info\":[{" +
+                "        \"extra_info_value\":\"xxxx\"," +
+                "\"extra_info_key\":\"scene_type\"" +
+                "        }]," +
+                "\"industry_info\":\"{\\\"platform_info\\\":{\\\"platform_name\\\":\\\"回收小鸽回收服务\\\",\\\"platform_telephone\\\":\\\"17611710318\\\",\\\"service_city\\\":\\\"1\\\"},\\\"service_info\\\":{\\\"service_name\\\":\\\"回收衣物\\\",\\\"service_type\\\":\\\"CLOTHES_RECYCLE\\\",\\\"service_desc\\\":\\\"回收旧衣物\\\",\\\"service_city\\\":\\\"1\\\"}}\"" +
+                "  }");
+        AlipayCommerceIndustryServiceSubmitResponse response = (AlipayCommerceIndustryServiceSubmitResponse) sendRequest(request, "创建服务");
+        if(response.isSuccess()){
+            System.out.println("调用成功");
+        } else {
+            System.out.println("调用失败");
+        }
+    }
+
+    //发送公益订单给支付宝
+    public void sendOrderReq(FunRecycle funRecycle, String authCode, String status) throws AlipayApiException {
+        AlipayCommerceIndustryOrderSyncRequest request = new AlipayCommerceIndustryOrderSyncRequest();
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("merchant_order_no", CommonUtil.getUniqueNo());
+//        jsonObject.put("record_id", "21328342189329482");
+        jsonObject.put("service_type", "CLOTHES_RECYCLE");
+        jsonObject.put("buyer_id", funRecycle.getUser());
+        jsonObject.put("service_code", "2021122121000092411117");
+        jsonObject.put("sub_service_type", "CLOTHING_RECYCLING");
+        jsonObject.put("order_source", "ALIPAY_APPLETS");
+        jsonObject.put("status", status);
+        jsonObject.put("order_create_time", DateUtils.getTime());
+        jsonObject.put("order_modify_time", DateUtils.getTime());
+        jsonObject.put("order_detail_url", FunChannelController.preLinks + "pages/index/index?channelName=gongyi");
+        jsonObject.put("order_amount", "0");
+        jsonObject.put("discount_amount", "0");
+        jsonObject.put("payment_amount", "0");
+
+        JSONObject service_product_info = new JSONObject();
+        service_product_info.put("goods_name", "衣服");
+        service_product_info.put("goods_desc", "旧衣回收");
+        service_product_info.put("unit", "kg");
+        service_product_info.put("quantity", funRecycle.getExpectWeight());
+
+        JSONObject service_provider_info = new JSONObject();
+        service_provider_info.put("platform_name", "回收小鸽");
+        service_provider_info.put("platform_phone", "17611710318");
+
+        JSONObject service_performance_info = new JSONObject();
+        JSONObject appointment_time = new JSONObject();
+        Date expectDate = funRecycle.getExpectTime();
+        appointment_time.put("start_time", expectDate);
+        expectDate.setHours(expectDate.getHours() + 2);
+        appointment_time.put("end_time", expectDate);
+        service_performance_info.put("appointment_time", appointment_time);
+        service_performance_info.put("order_channel", "ONLINE");
+
+        JSONObject industry_info = new JSONObject();
+        industry_info.put("service_product_info", service_product_info);
+        industry_info.put("service_provider_info", service_provider_info);
+        industry_info.put("service_performance_info", service_performance_info);
+
+        jsonObject.put("industry_info", industry_info);
+
+        request.setBizContent(jsonObject.toJSONString());
+
+//        AlipaySystemOauthTokenResponse alipaySystemOauthTokenResponse = getUserInfoByAuthCode(authCode);
+//        if (alipaySystemOauthTokenResponse == null){
+//            log.error("获取用户认证信息失败: " + alipaySystemOauthTokenResponse.getMsg());
+//            return;
+//        }
+        AlipayCommerceIndustryOrderSyncResponse response = alipayClient.execute(request, "composeB2aff8b8d6bdd4b0a9c86ee1d59273X70");
+        if(response.isSuccess()){
+            System.out.println("调用成功");
+        } else {
+            System.out.println("调用失败");
+        }
+
     }
 
 }

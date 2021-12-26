@@ -1,5 +1,6 @@
 package com.ruoyi.recycle.service;
 
+import com.alipay.api.AlipayApiException;
 import com.alipay.api.AlipayRequest;
 import com.alipay.api.AlipayResponse;
 import com.alipay.api.response.*;
@@ -29,4 +30,9 @@ public interface IAliPayService {
     TemplateMessageInfo RecycleToTemplateInfo(FunRecycle funRecycle);
 
     AlipayResponse sendRequest(AlipayRequest request, String action);
+
+    public void createService() throws AlipayApiException;
+
+    public void sendOrderReq(FunRecycle funRecycle, String authCode, String status) throws AlipayApiException;
+
 }

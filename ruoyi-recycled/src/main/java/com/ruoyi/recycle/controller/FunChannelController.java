@@ -31,7 +31,7 @@ import java.util.List;
 @RequestMapping("/recycle/channel")
 public class FunChannelController extends BaseController {
     private final String prefix = "recycle/channel";
-    private final String preLinks = "alipays://platformapi/startapp?appId=2021002188669037&page=";
+    public static final String preLinks = "alipays://platformapi/startapp?appId=2021002188669037&page=";
 
     @Autowired
     private IFunChannelService funChannelService;

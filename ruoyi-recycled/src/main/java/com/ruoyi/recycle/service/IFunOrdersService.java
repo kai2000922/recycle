@@ -63,4 +63,6 @@ public interface IFunOrdersService {
 
     int updateOrdersDone(Integer ordersID);
 
+    void queryOrderStatue();
+
 }

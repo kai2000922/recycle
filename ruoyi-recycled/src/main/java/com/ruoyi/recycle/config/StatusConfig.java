@@ -15,7 +15,7 @@ public class StatusConfig {
     public static final String order_fail_got = "揽货失败";
 
 
-    public static final String goods_no_pay = "未支付";
+    public static final String goods_no_pay = "待支付";
     public static final String goods_no_post = "未发货";
     public static final String goods_getting = "揽件中";
     public static final String goods_posted = "已发货";

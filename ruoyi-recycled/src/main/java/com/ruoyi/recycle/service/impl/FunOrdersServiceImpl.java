@@ -192,13 +192,14 @@ public class FunOrdersServiceImpl implements IFunOrdersService {
 
     public void queryOrderStatue(){
         FunOrders query = new FunOrders();
-        query.setStatu(StatusConfig.goods_no_pay);
+        query.setOrdersStatus(StatusConfig.goods_no_pay);
         List<FunOrders> orders = selectFunOrdersList(query);
 
         for (FunOrders order : orders){
             AlipayTradeQueryResponse response = aliPayService.queryOrder(order.getTradeNo());
             if (!response.getCode().equals("10000")) {
                 log.error("查询订单失败！：" + response.getMsg());
+                continue;
             }
 
             if (response.getTradeStatus().equals(AliPayApiConfig.TRADE_SUCCESS)){
@@ -210,6 +211,7 @@ public class FunOrdersServiceImpl implements IFunOrdersService {
             }else{
                 if ((new Date().getDay() - order.getCreateTime().getDay()) > 5){
                     order.setOrdersStatus(StatusConfig.goods_close);
+                    updateFunOrders(order);
                 }
             }
 

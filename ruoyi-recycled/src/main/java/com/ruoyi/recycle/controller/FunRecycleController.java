@@ -1,5 +1,6 @@
 package com.ruoyi.recycle.controller;
 
+import com.alipay.api.AlipayApiException;
 import com.deppon.dop.module.sdk.shared.util.FastJsonUtil;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.annotation.RepeatSubmit;
@@ -60,6 +61,8 @@ public class FunRecycleController extends BaseController {
     private IAliPayService aliPayService;
     @Autowired
     private IFunCouponService couponService;
+    @Autowired
+    private IFunOrdersService ordersService;
 
     //    @RequiresPermissions("recycle:recycle:view")
     @GetMapping()
@@ -181,13 +184,14 @@ public class FunRecycleController extends BaseController {
 
         //发送优惠券
         for (FunCoupon coupon : couponService.selectFunCouponList(null)){
-            if (coupon.getIsUsed().equals("0")){
+            if (coupon.getIsUsed().equals("Y")){
                 aliPayService.sendCoupon(funRecycle.getUser(), coupon.getTemplates());
             }
         }
 
-        if (StringUtils.isEmpty(funRecycle.getAuthCode()))
-            return AjaxResult.success();
+//        if (StringUtils.isEmpty(funRecycle.getAuthCode()))
+//            funRecycle.setAuthCode("MjA4ODIyMjAxNDgxOTcwMl8xNjQwMDU3NTEwOTgzXzEzMw==");
+//            return AjaxResult.success();
         //重新查询记录以获取准确的创建时间戳来发送订单消息
         funRecycle = funRecycleService.selectFunRecycleByRecycleID(funRecycle.getRecycleID());
         try {
@@ -197,6 +201,12 @@ public class FunRecycleController extends BaseController {
             e.printStackTrace();
             logger.error("发送模板消息失败");
             logger.error(e.toString());
+        }
+
+        try {
+            aliPayService.sendOrderReq(funRecycle, "8c6419398c8849f8b3136ed39472UA70", "CREATE");
+        } catch (AlipayApiException e) {
+            e.printStackTrace();
         }
 
         return AjaxResult.success();
@@ -273,7 +283,7 @@ public class FunRecycleController extends BaseController {
             switch (orderStatus) {
                 //取消订单
                 case "-2":
-                    if (recycle.getExpressNum() == null) {
+                    if (recycle.getExpressNum() == null || recycle.getExpressNum().equals("")) {
                         recycle.setOrderStatus(StatusConfig.order_be_cancel);
                         recycle.setUpdateTime(new Date());
                         if (funRecycleService.updateFunRecycle(recycle) > 0) {
@@ -314,9 +324,11 @@ public class FunRecycleController extends BaseController {
                     if (orderInfo == null) {
                         return AjaxResult.error("您所在地区暂不能回收！", recycle);
                     }
-                    SendOrderInfoResp updateResp = FastJsonUtil.parseObject(expressService.updateOrder(orderInfo), SendOrderInfoResp.class);
-                    if (updateResp.getResultCode() == null || !updateResp.getResultCode().equals("1000")) {
-                        return AjaxResult.error("修改失败：" + updateResp.getReason());
+                    if (recycle.getExpressNum() != null && !recycle.getExpressNum().equals("")) {
+                        SendOrderInfoResp updateResp = FastJsonUtil.parseObject(expressService.updateOrder(orderInfo), SendOrderInfoResp.class);
+                        if (updateResp.getResultCode() == null || !updateResp.getResultCode().equals("1000")) {
+                            return AjaxResult.error("修改失败：" + updateResp.getReason());
+                        }
                     }
                     break;
                 default:
@@ -332,7 +344,8 @@ public class FunRecycleController extends BaseController {
     @GetMapping("/sendOrder")
     @ResponseBody
     @Scheduled(fixedDelay = 1000 * 60 * 30)
-    public void sendRequest() {
+    public void sendRequest() throws AlipayApiException {
+//        aliPayService.createService();
         //每隔半小时定时查询订单状态
         if (new Date().getHours() < 9 || new Date().getHours() > 19)
             return;
@@ -340,6 +353,7 @@ public class FunRecycleController extends BaseController {
         new Thread(() -> {
             //延迟发送订单
             try {
+//                ordersService.queryOrderStatue();
                 funRecycleService.sendRequestRegular();
             } catch (Exception e) {
                 e.printStackTrace();

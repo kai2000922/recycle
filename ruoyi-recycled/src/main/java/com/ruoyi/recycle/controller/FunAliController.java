@@ -1,6 +1,7 @@
 package com.ruoyi.recycle.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.alipay.api.response.AlipaySystemOauthTokenResponse;
 import com.alipay.api.response.AlipayTradeQueryResponse;
 import com.deppon.dop.module.sdk.shared.util.FastJsonUtil;
 import com.ruoyi.common.core.domain.AjaxResult;

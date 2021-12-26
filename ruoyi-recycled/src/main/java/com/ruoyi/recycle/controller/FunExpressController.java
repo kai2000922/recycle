@@ -3,6 +3,7 @@ package com.ruoyi.recycle.controller;
 import com.deppon.dop.module.sdk.shared.util.FastJsonUtil;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.core.domain.AjaxResult;
+import com.ruoyi.recycle.config.ExpressApiConfig;
 import com.ruoyi.recycle.domain.FunRecycle;
 import com.ruoyi.recycle.domain.express.TraceQueryInfo;
 import com.ruoyi.recycle.domain.request.SendOrderInfoReq;
@@ -14,11 +15,14 @@ import com.ruoyi.recycle.service.IFunUserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.Objects;
 
 @RestController
@@ -43,10 +47,10 @@ public class FunExpressController {
         log.info("———————————————订单状态推送_请求———————————————");
         log.info(FastJsonUtil.toJSONString(sendOrderInfo));
 
-//        String expectDigest= Base64.encodeBase64String(DigestUtils.md5Hex(params+ ExpressApiConfig.getAppKey()+timestamp).getBytes());
-//        if(!expectDigest.equals(digest.trim()) || new Date().getTime()-Long.parseLong(timestamp) > 600000){
-//            return "摘要或时间验证失败！";
-//        }
+        String expectDigest= Base64.encodeBase64String(DigestUtils.md5Hex(params+ ExpressApiConfig.getAppKey()+timestamp).getBytes());
+        if(!expectDigest.equals(digest.trim()) || new Date().getTime()-Long.parseLong(timestamp) > 600000){
+            return "摘要或时间验证失败！";
+        }
 
         CommonResp resp = new CommonResp();
         resp.setResult("true");
