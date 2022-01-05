@@ -1,5 +1,6 @@
 package com.ruoyi.recycle.service.impl;
 
+import com.alipay.api.AlipayApiException;
 import com.deppon.dop.module.sdk.shared.util.FastJsonUtil;
 import com.deppon.dop.module.sdk.shared.util.SecurityUtil;
 import com.ruoyi.common.utils.DateUtils;
@@ -139,6 +140,12 @@ public class ExpressServiceImpl implements IExpressService {
 
                 TemplateMessageInfo templateMessageInfo = aliPayService.RecycleToTemplateInfo(recycle);
                 aliPayService.sendOrderMessage(templateMessageInfo);
+
+                try {
+                    aliPayService.sendOrderReq(recycle,  "FINISHED");
+                } catch (AlipayApiException e) {
+                    e.printStackTrace();
+                }
 
                 //TODO
 //                //判断重量是否达标

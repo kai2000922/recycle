@@ -86,7 +86,7 @@ public class FunRecycle extends BaseEntity {
      * 是否预约现在
      */
     @NotNull
-    private Integer isNow;
+    private String isNow;
 
     /**
      * 期望上门时间
@@ -276,11 +276,11 @@ public class FunRecycle extends BaseEntity {
         return actualWeight;
     }
 
-    public void setIsNow(Integer isNow) {
+    public void setIsNow(String isNow) {
         this.isNow = isNow;
     }
 
-    public Integer getIsNow() {
+    public String getIsNow() {
         return isNow;
     }
 

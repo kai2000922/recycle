@@ -195,7 +195,7 @@ public class SysUserController extends BaseController
     @ResponseBody
     public AjaxResult resetPwdSave(SysUser user)
     {
-        userService.checkUserAllowed(user);
+//        userService.checkUserAllowed(user);
         user.setSalt(ShiroUtils.randomSalt());
         user.setPassword(passwordService.encryptPassword(user.getLoginName(), user.getPassword(), user.getSalt()));
         if (userService.resetUserPwd(user) > 0)

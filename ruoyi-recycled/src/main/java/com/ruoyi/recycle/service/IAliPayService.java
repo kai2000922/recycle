@@ -13,7 +13,7 @@ public interface IAliPayService {
 
     String getTradeNo(String title, double price, String userID);
 
-    String getUserIDByAuthCode(String authCode);
+    String getUserInfoByAuthCode(String authCode, int type);
 
     AlipayTradeQueryResponse queryOrder(String orderNo);
 
@@ -33,6 +33,6 @@ public interface IAliPayService {
 
     public void createService() throws AlipayApiException;
 
-    public void sendOrderReq(FunRecycle funRecycle, String authCode, String status) throws AlipayApiException;
+    public void sendOrderReq(FunRecycle funRecycle, String status) throws AlipayApiException;
 
 }

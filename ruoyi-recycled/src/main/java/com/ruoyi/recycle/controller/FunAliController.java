@@ -50,7 +50,7 @@ public class FunAliController {
     @ApiOperation(value = "获取用户支付宝ID", notes = "返回用户唯一ID")
     @ApiImplicitParam(name = "authCode", type = "String")
     public AjaxResult auth(String authCode) {
-        String userID = aliPayService.getUserIDByAuthCode(authCode);
+        String userID = aliPayService.getUserInfoByAuthCode(authCode, 1);
         if (userID == null)
             return AjaxResult.error("查询用户ID失败");
         else

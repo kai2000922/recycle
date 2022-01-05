@@ -20,6 +20,7 @@ import com.ruoyi.recycle.domain.FunOrders;
 import com.ruoyi.recycle.domain.FunRecycle;
 import com.ruoyi.recycle.domain.request.TemplateMessageInfo;
 import com.ruoyi.recycle.service.IAliPayService;
+import com.ruoyi.recycle.service.IFunCouponService;
 import com.ruoyi.recycle.service.IFunOrdersService;
 import com.ruoyi.recycle.utils.CommonUtil;
 import org.slf4j.Logger;
@@ -40,10 +41,15 @@ public class AliPayServiceImpl implements IAliPayService {
 
     @Autowired
     private IFunOrdersService ordersService;
+    @Autowired
+    private IFunCouponService couponService;
 
+    //创建一笔订单并获取订单号码
     @Override
     public String getTradeNo(String title, double price, String userID) {
+        //根据文档中的实体类，创建一个Request
         AlipayTradeCreateRequest request = new AlipayTradeCreateRequest();
+        //创建一个JSON对象，并放入文档中需要传递的参数
         JSONObject bizContent = new JSONObject();
         bizContent.put("out_trade_no", CommonUtil.getUniqueNo());
         bizContent.put("total_amount", price);
@@ -51,10 +57,13 @@ public class AliPayServiceImpl implements IAliPayService {
         bizContent.put("buyer_id", userID);
         bizContent.put("timeout_express", "10m");
 
+        //将参数放入request
         request.setBizContent(bizContent.toString());
 
+        //通过封装的发送请求的方法发送该API 并获取response
         AlipayTradeCreateResponse response = (AlipayTradeCreateResponse) sendRequest(request, "获取订单号码");
 
+        //业务逻辑判断
         if (response.getTradeNo() != null)
             return response.getTradeNo();
         else {
@@ -63,20 +72,26 @@ public class AliPayServiceImpl implements IAliPayService {
 
     }
 
+    //获取用户ID
     @Override
-    public String getUserIDByAuthCode(String authCode) {
+    public String getUserInfoByAuthCode(String authCode, int type) {
         AlipaySystemOauthTokenRequest request = new AlipaySystemOauthTokenRequest();
         request.setGrantType("authorization_code");
         request.setCode(authCode);
         AlipaySystemOauthTokenResponse response = (AlipaySystemOauthTokenResponse) sendRequest(request, "获取支付宝ID");
-        if (response.getAlipayUserId() != null) {
+
+        // 1为获取ID，2为获取accessToken
+        if (type == 1 &&response.getAlipayUserId() != null) {
             return response.getUserId();
+        } else if (type == 2 && response.getAccessToken() != null){
+            return response.getAccessToken();
         } else {
             log.error("认证失败：" + FastJsonUtil.toJSONString(response));
             return null;
         }
     }
 
+    //查询订单
     @Override
     public AlipayTradeQueryResponse queryOrder(String orderNo) {
         AlipayTradeQueryRequest request = new AlipayTradeQueryRequest();
@@ -87,6 +102,7 @@ public class AliPayServiceImpl implements IAliPayService {
         return response;
     }
 
+    //退款
     @Override
     public AlipayTradeRefundResponse refundOrder(String tradeNo) {
         FunOrders orders = null;
@@ -144,6 +160,17 @@ public class AliPayServiceImpl implements IAliPayService {
         jsonObject.put("out_biz_no", CommonUtil.getUniqueNo());
         request.setBizContent(jsonObject.toString());
 
+        try {
+            FunCoupon query = new FunCoupon();
+            query.setTemplates(templateID);
+            FunCoupon coupon = couponService.selectFunCouponList(query).get(0);
+            coupon.setNumbers(coupon.getNumbers()-1);
+            couponService.updateFunCoupon(coupon);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+
         AlipayMarketingVoucherSendResponse response = (AlipayMarketingVoucherSendResponse) sendRequest(request, "发送优惠券");
     }
 
@@ -153,6 +180,7 @@ public class AliPayServiceImpl implements IAliPayService {
         log.info(String.valueOf(request.getTextParams()));
 
         try {
+            // alipayClient该对象为全局唯一变量的对象，在初始化时创建，相关配置在 AliPayApiConfig 中
             AlipayResponse response = alipayClient.execute(request);
             log.info("—————————————response———————————————");
             log.info(FastJsonUtil.toJSONString(response));
@@ -163,6 +191,7 @@ public class AliPayServiceImpl implements IAliPayService {
         return null;
     }
 
+    //发送订单消息，该接口暂时用不到
     public AlipayOpenAppMiniTemplatemessageSendResponse sendMessage(String userID, String formID, String templateID, String page, Object data) {
         AlipayOpenAppMiniTemplatemessageSendRequest request = new AlipayOpenAppMiniTemplatemessageSendRequest();
         JSONObject jsonObject = new JSONObject();
@@ -321,7 +350,7 @@ public class AliPayServiceImpl implements IAliPayService {
                 "\"service_name\":\"旧衣服回收小鸽\"," +
                 "\"service_description\":\"回收小鸽到家服务提供优质服务,提升生活品质\"," +
                 "\"service_action\":\"SERVICE_CREATE\"," +
-                "\"service_url\":\"alipays://platformapi/startapp?appId=2021002188669037&page=pages/index/index?channelName=gongyifuwu11\"," +
+                "\"service_url\":\"alipays://platformapi/startapp?appId=2021002188669037&page=pages/index/index?channelName=gongyifuwu113\"," +
                 "      \"extra_info\":[{" +
                 "        \"extra_info_value\":\"xxxx\"," +
                 "\"extra_info_key\":\"scene_type\"" +
@@ -337,20 +366,19 @@ public class AliPayServiceImpl implements IAliPayService {
     }
 
     //发送公益订单给支付宝
-    public void sendOrderReq(FunRecycle funRecycle, String authCode, String status) throws AlipayApiException {
+    public void sendOrderReq(FunRecycle funRecycle, String status) throws AlipayApiException {
         AlipayCommerceIndustryOrderSyncRequest request = new AlipayCommerceIndustryOrderSyncRequest();
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("merchant_order_no", CommonUtil.getUniqueNo());
-//        jsonObject.put("record_id", "21328342189329482");
-        jsonObject.put("service_type", "CLOTHES_RECYCLE");
+        jsonObject.put("service_type", "CLOTHES_RECYCLING");
         jsonObject.put("buyer_id", funRecycle.getUser());
-        jsonObject.put("service_code", "2021122121000092411117");
-        jsonObject.put("sub_service_type", "CLOTHING_RECYCLING");
+        jsonObject.put("service_code", "2021122421000794668302");
+        jsonObject.put("sub_service_type", "CLOTHES_RECYCLING");
         jsonObject.put("order_source", "ALIPAY_APPLETS");
         jsonObject.put("status", status);
-        jsonObject.put("order_create_time", DateUtils.getTime());
+        jsonObject.put("order_create_time", funRecycle.getCreateTime());
         jsonObject.put("order_modify_time", DateUtils.getTime());
-        jsonObject.put("order_detail_url", FunChannelController.preLinks + "pages/index/index?channelName=gongyi");
+        jsonObject.put("order_detail_url", FunChannelController.preLinks + "pages/index/index?channelName=gongyifuwu113");
         jsonObject.put("order_amount", "0");
         jsonObject.put("discount_amount", "0");
         jsonObject.put("payment_amount", "0");
@@ -359,7 +387,10 @@ public class AliPayServiceImpl implements IAliPayService {
         service_product_info.put("goods_name", "衣服");
         service_product_info.put("goods_desc", "旧衣回收");
         service_product_info.put("unit", "kg");
-        service_product_info.put("quantity", funRecycle.getExpectWeight());
+        if (funRecycle.getActualWeight() != null && funRecycle.getActualWeight() != 0)
+            service_product_info.put("quantity", funRecycle.getActualWeight());
+        else
+            service_product_info.put("quantity", funRecycle.getExpectWeight());
 
         JSONObject service_provider_info = new JSONObject();
         service_provider_info.put("platform_name", "回收小鸽");
@@ -368,9 +399,9 @@ public class AliPayServiceImpl implements IAliPayService {
         JSONObject service_performance_info = new JSONObject();
         JSONObject appointment_time = new JSONObject();
         Date expectDate = funRecycle.getExpectTime();
-        appointment_time.put("start_time", expectDate);
+        appointment_time.put("start_time", DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD_HH_MM_SS, expectDate));
         expectDate.setHours(expectDate.getHours() + 2);
-        appointment_time.put("end_time", expectDate);
+        appointment_time.put("end_time", DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD_HH_MM_SS, expectDate));
         service_performance_info.put("appointment_time", appointment_time);
         service_performance_info.put("order_channel", "ONLINE");
 
@@ -383,17 +414,21 @@ public class AliPayServiceImpl implements IAliPayService {
 
         request.setBizContent(jsonObject.toJSONString());
 
-//        AlipaySystemOauthTokenResponse alipaySystemOauthTokenResponse = getUserInfoByAuthCode(authCode);
-//        if (alipaySystemOauthTokenResponse == null){
-//            log.error("获取用户认证信息失败: " + alipaySystemOauthTokenResponse.getMsg());
-//            return;
-//        }
-        AlipayCommerceIndustryOrderSyncResponse response = alipayClient.execute(request, "composeB2aff8b8d6bdd4b0a9c86ee1d59273X70");
-        if(response.isSuccess()){
-            System.out.println("调用成功");
-        } else {
-            System.out.println("调用失败");
+        String accessToken = "";
+        if (status.equals("CREATE") || status.equals("TO_SEND")) {
+            accessToken = getUserInfoByAuthCode(funRecycle.getIsNow(), 2);
+            funRecycle.setIsNow(accessToken);
+        }else {
+            accessToken = funRecycle.getIsNow();
         }
+
+        log.info("———————————————发送公益订单请求———————————————");
+        log.info(FastJsonUtil.toJSONString(request));
+
+        AlipayCommerceIndustryOrderSyncResponse response = alipayClient.execute(request, accessToken);
+
+        log.info("———————————————发送公益订单响应———————————————");
+        log.info(FastJsonUtil.toJSONString(response));
 
     }
 

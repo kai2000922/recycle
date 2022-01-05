@@ -9,9 +9,7 @@ import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.utils.DateUtils;
-import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.poi.ExcelUtil;
-import com.ruoyi.recycle.config.AliPayApiConfig;
 import com.ruoyi.recycle.config.StatusConfig;
 import com.ruoyi.recycle.domain.FunCoupon;
 import com.ruoyi.recycle.domain.FunRecycle;
@@ -130,7 +128,7 @@ public class FunRecycleController extends BaseController {
             return AjaxResult.error("参数错误", result.getAllErrors());
         }
 
-        //通过 回收订单 获取物流发送信息
+        //通过 回收订单 获取 创建物流订单 实体
         SendOrderInfo orderInfo = funRecycleService.getOrder(funRecycle);
         if (orderInfo == null) {
             return AjaxResult.error("您所选择地区暂时不能回收，请您稍后再试！", funRecycle);
@@ -145,7 +143,7 @@ public class FunRecycleController extends BaseController {
 
         //发送物流请求
         SendOrderInfoResp sendResp = null;
-        if (funRecycle.getExpectTime().getTime() < new Date().getTime()) {
+        if (funRecycle.getExpectTime().getTime() <= new Date().getTime()) {
             sendResp = FastJsonUtil.parseObject(expressService.sendOrder(orderInfo), SendOrderInfoResp.class);
             if (!sendResp.getResultCode().equals("1000")) {
                 return AjaxResult.error("创建订单失败：" + sendResp.getReason());
@@ -204,8 +202,10 @@ public class FunRecycleController extends BaseController {
         }
 
         try {
-            aliPayService.sendOrderReq(funRecycle, "8c6419398c8849f8b3136ed39472UA70", "CREATE");
-        } catch (AlipayApiException e) {
+            aliPayService.sendOrderReq(funRecycle,  "TO_SEND");
+            // 更新accessToken
+            funRecycleService.updateFunRecycle(funRecycle);
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -277,19 +277,33 @@ public class FunRecycleController extends BaseController {
             @ApiImplicitParam(name = "param", dataType = "String"),
             @ApiImplicitParam(name = "orderID", dataType = "String")
     })
-    public AjaxResult editOrder(@RequestParam String orderStatus, String param, Long orderID) {
+    public AjaxResult editOrder(@RequestParam String orderStatus, String param, Long orderID, String authCode) {
         FunRecycle recycle = funRecycleService.selectFunRecycleByRecycleID(orderID);
         if (recycle != null) {
             switch (orderStatus) {
                 //取消订单
                 case "-2":
+                    //发送模板消息
+                    try {
+                        TemplateMessageInfo templateMessageInfo = aliPayService.RecycleToTemplateInfo(recycle);
+                        aliPayService.sendOrderMessage(templateMessageInfo);
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+
+                    //发送公益消息
+                    try {
+                        aliPayService.sendOrderReq(recycle,  "CANCELED");
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                    //如果还未发送订单给物流
                     if (recycle.getExpressNum() == null || recycle.getExpressNum().equals("")) {
                         recycle.setOrderStatus(StatusConfig.order_be_cancel);
                         recycle.setUpdateTime(new Date());
                         if (funRecycleService.updateFunRecycle(recycle) > 0) {
                             recycle.setOrderStatus(StatusConfig.order_be_cancel);
-                            TemplateMessageInfo templateMessageInfo = aliPayService.RecycleToTemplateInfo(recycle);
-                            aliPayService.sendOrderMessage(templateMessageInfo);
                         } else
                             return AjaxResult.error();
                         return AjaxResult.success();
@@ -300,8 +314,7 @@ public class FunRecycleController extends BaseController {
                         return AjaxResult.error("取消订单失败：" + cancelResp.getReason());
                     }
                     recycle.setOrderStatus(StatusConfig.order_be_cancel);
-                    TemplateMessageInfo templateMessageInfo = aliPayService.RecycleToTemplateInfo(recycle);
-                    aliPayService.sendOrderMessage(templateMessageInfo);
+
                     break;
                 //修改订单
                 case "-1":
@@ -345,7 +358,8 @@ public class FunRecycleController extends BaseController {
     @ResponseBody
     @Scheduled(fixedDelay = 1000 * 60 * 30)
     public void sendRequest() throws AlipayApiException {
-//        aliPayService.createService();
+//        FunRecycle recycle = funRecycleService.selectFunRecycleByRecycleID(1416L);
+//        aliPayService.sendOrderReq(recycle,  "FINISHED");
         //每隔半小时定时查询订单状态
         if (new Date().getHours() < 9 || new Date().getHours() > 19)
             return;

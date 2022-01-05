@@ -24,6 +24,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectFunCouponVo"/>
         <where>  
             <if test="couponName != null  and couponName != ''"> and coupon_name = #{couponName}</if>
+            <if test="templates != null  and templates != ''"> and templates = #{templates}</if>
             <if test="isUsed != null  and isUsed != ''"> and is_used = #{isUsed}</if>
         </where>
     </select>
