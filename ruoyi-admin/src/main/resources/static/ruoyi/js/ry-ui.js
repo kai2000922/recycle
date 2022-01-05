@@ -34,7 +34,7 @@ var table = {
         // 表格封装处理
         table: {
             // 初始化表格参数
-            init: function(options) {
+            init: function(options, page = true) {
                 var defaults = {
                     id: "bootstrap-table",
                     type: 0, // 0 代表bootstrapTable 1代表bootstrapTreeTable
@@ -43,7 +43,7 @@ var table = {
                     sidePagination: "server",
                     sortName: undefined,
                     sortOrder: "asc",
-                    pagination: true,
+                    pagination: page,
                     paginationLoop: false,
                     pageSize: 10,
                     pageNumber: 1,
@@ -55,11 +55,11 @@ var table = {
                     firstLoad: true,
                     showFooter: false,
                     search: false,
-                    showSearch: true,
+                    showSearch: page,
                     showPageGo: false,
-                    showRefresh: true,
-                    showColumns: true,
-                    showToggle: true,
+                    showRefresh: page,
+                    showColumns: page,
+                    showToggle: page,
                     showExport: false,
                     showPrint: false,
                     exportDataType: 'all',
@@ -94,7 +94,7 @@ var table = {
                     pagination: options.pagination,                     // 是否显示分页（*）
                     paginationLoop: options.paginationLoop,             // 是否启用分页条无限循环的功能
                     pageNumber: 1,                                      // 初始化加载第一页，默认第一页
-                    pageSize: options.pageSize,                         // 每页的记录行数（*） 
+                    pageSize: options.pageSize,                         // 每页的记录行数（*）
                     pageList: options.pageList,                         // 可供选择的每页的行数（*）
                     firstLoad: options.firstLoad,                       // 是否首次请求加载数据，对于数据较大可以配置false
                     escape: options.escape,                             // 转义HTML字符串
@@ -155,7 +155,7 @@ var table = {
             // 获取实例ID，如存在多个返回#id1,#id2 delimeter分隔符
             getOptionsIds: function(separator) {
                 var _separator = $.common.isEmpty(separator) ? "," : separator;
-                var optionsIds = "";  
+                var optionsIds = "";
                 $.each(table.config, function(key, value){
                     optionsIds += "#" + key + _separator;
                 });
@@ -172,7 +172,7 @@ var table = {
                     isAsc:          params.order
                 };
                 var currentId = $.common.isEmpty(table.options.formId) ? $('form').attr('id') : table.options.formId;
-                return $.extend(curParams, $.common.formToJSON(currentId)); 
+                return $.extend(curParams, $.common.formToJSON(currentId));
             },
             // 请求获取数据后处理回调函数
             responseHandler: function(res) {
@@ -885,9 +885,9 @@ var table = {
             },
             // 弹出层指定参数选项
             openOptions: function (options) {
-                var _url = $.common.isEmpty(options.url) ? "/404.html" : options.url; 
-                var _title = $.common.isEmpty(options.title) ? "系统窗口" : options.title; 
-                var _width = $.common.isEmpty(options.width) ? "800" : options.width; 
+                var _url = $.common.isEmpty(options.url) ? "/404.html" : options.url;
+                var _title = $.common.isEmpty(options.title) ? "系统窗口" : options.title;
+                var _width = $.common.isEmpty(options.width) ? "800" : options.width;
                 var _height = $.common.isEmpty(options.height) ? ($(window).height() - 50) : options.height;
                 var _btn = ['<i class="fa fa-check"></i> 确认', '<i class="fa fa-close"></i> 关闭'];
                 // 如果是移动端，就使用自适应大小弹窗
@@ -1050,7 +1050,7 @@ var table = {
                     width: width,
                     height: height,
                     url: _url,
-                    skin: 'layui-layer-gray', 
+                    skin: 'layui-layer-gray',
                     btn: ['关闭'],
                     yes: function (index, layero) {
                         $.modal.close(index);
