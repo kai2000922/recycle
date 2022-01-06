@@ -209,7 +209,7 @@ public class FunOrdersServiceImpl implements IFunOrdersService {
                 order.setZfPrice(Double.parseDouble(response.getBuyerPayAmount()));
                 order.setOrdersStatus("未发货");
             }else{
-                if ((new Date().getDay() - order.getCreateTime().getDay()) > 5){
+                if ((new Date().getTime() - order.getCreateTime().getTime()) > 1000 * 60 * 60 * 24 * 5){
                     order.setOrdersStatus(StatusConfig.goods_close);
                     updateFunOrders(order);
                 }

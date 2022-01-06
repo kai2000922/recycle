@@ -356,10 +356,8 @@ public class FunRecycleController extends BaseController {
 
     @GetMapping("/sendOrder")
     @ResponseBody
-    @Scheduled(fixedDelay = 1000 * 60 * 30)
+    @Scheduled(fixedDelay = 1000 * 60 * 60)
     public void sendRequest() throws AlipayApiException {
-//        FunRecycle recycle = funRecycleService.selectFunRecycleByRecycleID(1416L);
-//        aliPayService.sendOrderReq(recycle,  "FINISHED");
         //每隔半小时定时查询订单状态
         if (new Date().getHours() < 9 || new Date().getHours() > 19)
             return;
@@ -367,7 +365,7 @@ public class FunRecycleController extends BaseController {
         new Thread(() -> {
             //延迟发送订单
             try {
-//                ordersService.queryOrderStatue();
+                ordersService.queryOrderStatue();
                 funRecycleService.sendRequestRegular();
             } catch (Exception e) {
                 e.printStackTrace();
