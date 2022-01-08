@@ -398,7 +398,7 @@ public class AliPayServiceImpl implements IAliPayService {
 
         JSONObject service_performance_info = new JSONObject();
         JSONObject appointment_time = new JSONObject();
-        Date expectDate = funRecycle.getExpectTime();
+        Date expectDate = new Date(funRecycle.getExpectTime().getTime());
         appointment_time.put("start_time", DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD_HH_MM_SS, expectDate));
         expectDate.setHours(expectDate.getHours() + 2);
         appointment_time.put("end_time", DateUtils.parseDateToStr(DateUtils.YYYY_MM_DD_HH_MM_SS, expectDate));
