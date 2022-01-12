@@ -365,7 +365,7 @@ public class FunRecycleController extends BaseController {
         new Thread(() -> {
             //延迟发送订单
             try {
-                ordersService.queryOrderStatue();
+//                ordersService.queryOrderStatue();
                 funRecycleService.sendRequestRegular();
             } catch (Exception e) {
                 e.printStackTrace();
