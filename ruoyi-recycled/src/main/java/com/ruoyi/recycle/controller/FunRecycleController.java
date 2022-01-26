@@ -358,6 +358,16 @@ public class FunRecycleController extends BaseController {
     @ResponseBody
     @Scheduled(fixedDelay = 1000 * 60 * 60)
     public void sendRequest() throws AlipayApiException {
+
+        new Thread(() -> {
+            //延迟发送订单
+            try {
+                ordersService.queryOrderStatue();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }).start();
+
         //每隔半小时定时查询订单状态
         if (new Date().getHours() < 9 || new Date().getHours() > 19)
             return;
@@ -365,7 +375,6 @@ public class FunRecycleController extends BaseController {
         new Thread(() -> {
             //延迟发送订单
             try {
-//                ordersService.queryOrderStatue();
                 funRecycleService.sendRequestRegular();
             } catch (Exception e) {
                 e.printStackTrace();

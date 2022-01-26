@@ -196,6 +196,11 @@ public class FunOrdersServiceImpl implements IFunOrdersService {
         List<FunOrders> orders = selectFunOrdersList(query);
 
         for (FunOrders order : orders){
+            if (StringUtils.isEmpty(order.getTradeNo())){
+                order.setOrdersStatus("已关闭");
+                funOrdersMapper.updateFunOrders(order);
+                continue;
+            }
             AlipayTradeQueryResponse response = aliPayService.queryOrder(order.getTradeNo());
             if (!response.getCode().equals("10000")) {
                 log.error("查询订单失败！：" + response.getMsg());
