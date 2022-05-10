@@ -41,10 +41,10 @@ public class SysJobServiceImpl implements ISysJobService
     {
         scheduler.clear();
         List<SysJob> jobList = jobMapper.selectJobAll();
-        for (SysJob job : jobList)
-        {
-            ScheduleUtils.createScheduleJob(scheduler, job);
-        }
+//        for (SysJob job : jobList)
+//        {
+//            ScheduleUtils.createScheduleJob(scheduler, job);
+//        }
     }
 
     /**

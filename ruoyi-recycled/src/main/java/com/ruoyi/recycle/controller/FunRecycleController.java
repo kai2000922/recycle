@@ -356,7 +356,7 @@ public class FunRecycleController extends BaseController {
 
     @GetMapping("/sendOrder")
     @ResponseBody
-    @Scheduled(fixedDelay = 1000 * 60 * 60)
+//    @Scheduled(fixedDelay = 1000 * 60 * 60)
     public void sendRequest() throws AlipayApiException {
 
         new Thread(() -> {
